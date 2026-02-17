@@ -65,8 +65,8 @@ char *to_path(char *req) {
     if (!start[0]) { return NULL; };
   }
 
-  // Skip over the space
-  start++;
+  int amount_to_skip = start[1] == '/' ? 2 : 1;
+  start += amount_to_skip;
 
   for (end = start; end[0] != ' '; end++) {
     if (!end[0] || end + deflen > req + reqlen) {
@@ -75,16 +75,15 @@ char *to_path(char *req) {
     };
   }
 
-  if (end[-1] == '/') {
-    end--;
-  } else {
+  if (end[-1] != '/') {
     end[0] = '/';
+    end++;
   }
 
 
-  memcpy(end + 1, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
+  memcpy(end, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
 
-  return start + 1;
+  return start;
 }
 
 int main() {
