@@ -44,7 +44,7 @@ char *my_first_attempted_to_path(char *req) {
     memcpy(cpy + base_length + 1, DEFAULT_FILE, strlen(DEFAULT_FILE));
     cpy[length - 1] = '\0';
 
-    return cpy;
+    return cpy + 1;
 }
 
 char *to_path(char *req) {
@@ -84,7 +84,7 @@ char *to_path(char *req) {
 
   memcpy(end + 1, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
 
-  return start;
+  return start + 1;
 }
 
 int main() {
@@ -109,3 +109,40 @@ int main() {
 
     return 0;
 }
+
+// The Mixed Return Problem
+
+// Your `to_path` now sometimes returns a pointer into the original buffer (the in-place path) and sometimes returns a `malloc`'d pointer. The caller has no way to know which one it got. This matters because:
+
+// - `malloc`'d memory **must** be `free`'d, or you leak memory
+// - A pointer into the stack buffer **must not** be `free`'d, or you corrupt the heap
+
+// So if the caller does `free(result)`, it works for `req4` but crashes for `req1`. If the caller doesn't call `free`, it works for `req1` but leaks for `req4`. There's no winning.
+
+// This is a real problem in C APIs. Common solutions:
+
+// **1. Always allocate.** Make `to_path` always `malloc` and return a new string. The caller always calls `free`. Simple, consistent contract.
+
+// **2. Never allocate.** Return `NULL` when the buffer is too small (what the solution does). The caller is responsible for providing a big enough buffer. No memory management needed.
+
+// **3. Let the caller provide the output buffer.**
+// ```c
+// char *to_path(char *req, size_t req_len, char *out, size_t out_len);
+// ```
+// The caller controls all memory. Very common in C APIs (like `snprintf`).
+
+// ## How to `free`
+
+// For the cases where you do `malloc`, the caller would do:
+
+// ```c
+// char *path = to_path(req4);
+// printf("Result: \"%s\"\n", path);
+// free(path);  // Release the malloc'd memory
+// ```
+
+// But again — this only works if you **know** the pointer was `malloc`'d. That's why mixing the two return styles is dangerous.
+
+// ## The solution's philosophy
+
+// The solution chose option 2: if there's not enough room, just return `NULL`. This keeps the contract simple — the return value is always either `NULL` or a pointer into the original buffer, and the caller never needs to call `free`. In C, keeping memory ownership clear and consistent is more important than handling every edge case.
