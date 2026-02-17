@@ -20,17 +20,17 @@ int main() {
 
     write(1, msg + 4, msg_length - 4);
 
-    char *ch = u8"\U0001F600\n";
+    char *ch = u8"@\U0001F600\n";
 
     int length = 0;
-    char *ptr = ch;
-
+    char *ptr = &ch[0];
     while (*ptr != '\0') {
       length++;
       ptr++;
     }
 
     write(1, ch, length);
+    printf("At address %p\n%c\n", ptr - length, *(ptr - length));
 
     // 👉 Try uncommenting the next 2 lines, as well as the #include <stdio.h> at the top.
     //    (You'll want to change the length of write() above back to 14 first!)
