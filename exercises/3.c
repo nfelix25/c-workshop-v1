@@ -24,7 +24,7 @@ char *my_first_attempted_to_path(char *req) {
     char *first_break = find_next_break(req);
     char *next_break = find_next_break(first_break + 1);
 
-    if (next_break[1] == '\0') return NULL;
+    if (next_break[0] == '\0') return NULL;
 
     if (first_break[1] == '/') {
       first_break++;
@@ -69,7 +69,10 @@ char *to_path(char *req) {
   start++;
 
   for (end = start; end[0] != ' '; end++) {
-    if (!end[0] || end + deflen > req + reqlen) { return NULL; };
+    if (!end[0] || end + deflen > req + reqlen) {
+      if (!end[0]) return NULL;
+      return my_first_attempted_to_path(req);
+    };
   }
 
   if (end[-1] == '/') {
