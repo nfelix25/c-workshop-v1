@@ -12,13 +12,13 @@ int main() {
     //    changing the length to 14.
     // 👉 Try making the length less than 14. What happens when you run the program?
     // 👉 Try making the length much longer than 14, like 200. What happens? 😱
-    char msg[] = "Greetings, Planet?";
+    char msg[] = "GreeGreetings, Planet?";
 
     size_t msg_length = sizeof(msg);
 
     msg[msg_length - 1] = '\n';
 
-    write(1, msg, msg_length);
+    write(1, msg + 4, msg_length - 4);
 
     char *ch = u8"\U0001F600\n";
 
