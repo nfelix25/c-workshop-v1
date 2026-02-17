@@ -7,12 +7,11 @@
 //
 // gcc -o app2 2.c && ./app2
 size_t strlength (const char *str) {
-  size_t len = 0;
-  while (*str != '\0') {
-    str++;
-    len++;
+  const char *ptr = str;
+  while (*ptr != '\0') {
+    ptr++;
   }
-  return len;
+  return (size_t)(ptr - str);
 }
 
 
