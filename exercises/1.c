@@ -16,19 +16,21 @@ int main() {
 
     size_t msg_length = sizeof(msg);
 
+    msg[msg_length - 1] = '\n';
+
+    write(1, msg, msg_length);
+
+    char *ch = u8"\U0001F600\n";
+
     int length = 0;
-    char *ptr = msg;
+    char *ptr = ch;
 
     while (*ptr != '\0') {
       length++;
       ptr++;
     }
 
-    *ptr = '\n';
-    length++;
-
-    write(1, msg, msg_length);
-    write(1, msg, length);
+    write(1, ch, length);
 
     // 👉 Try uncommenting the next 2 lines, as well as the #include <stdio.h> at the top.
     //    (You'll want to change the length of write() above back to 14 first!)
