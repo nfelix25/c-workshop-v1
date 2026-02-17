@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // 👉 First, build and run the program.
 //
@@ -9,42 +10,78 @@
 
 const char* DEFAULT_FILE = "index.html";
 
+char *find_next_break(char *str) {
+  char *curr = str;
+
+  while (curr[0] != ' ' && curr[0] != '\0') {
+    curr++;
+  }
+
+  return curr;
+}
+
+char *my_first_attempted_to_path(char *req) {
+    char *first_break = find_next_break(req);
+    char *next_break = find_next_break(first_break + 1);
+
+    if (next_break[1] == '\0') return NULL;
+
+    if (first_break[1] == '/') {
+      first_break++;
+    }
+
+    if (next_break[-1] == '/') {
+      next_break--;
+    }
+
+    size_t base_length = next_break - first_break;
+    size_t length = base_length + strlen(DEFAULT_FILE) + 2;
+
+    char *cpy = malloc(length);
+    char* sep = "/";
+    memcpy(cpy, first_break, base_length);
+    memcpy(cpy + base_length, sep, 1);
+    memcpy(cpy + base_length + 1, DEFAULT_FILE, strlen(DEFAULT_FILE));
+    cpy[length - 1] = '\0';
+
+    return cpy;
+}
+
 char *to_path(char *req) {
-    char *start, *end;
+  char *start, *end;
 
-    // Advance `start` to the first space
-    for (start = req; start[0] != ' '; start++) {
-        if (!start[0]) {
-            return NULL;
-        }
-    }
+  size_t reqlen, deflen;
+  reqlen = strlen(req);
+  deflen = strlen(DEFAULT_FILE);
 
-    start++; // Skip over the space
+  // while (start[0] != ' ') {
+  //   // '\0' == 0 == FALSE
+  //   if (!start[0]) return NULL;
 
-    // Advance `end` to the second space
-    for (end = start; end[0] != ' '; end++) {
-        if (!end[0]) {
-            return NULL;
-        }
-    }
+  //   start++;
+  // }
 
-    // Ensure there's a '/' right before where we're about to copy in "index.html"
-    if (end[-1] == '/') {
-        end--; // We end in a slash, e.g. "/blog/" - so just move `end` to that slash.
-    } else {
-        end[0] = '/'; // We don't end in a slash, so write one.
-    }
+  for (start = req; start[0] != ' '; start++) {
+    if (!start[0]) { return NULL; };
+  }
 
-    // Copy in "index.html", overwriting whatever was there in the request string.
-    memcpy(
-        // 👉 Try refactoring out this + 1 by modifying the `if/else` above.
-        end + 1,
-        DEFAULT_FILE,
-        // 👉 Try removing the +1 here. Re-run to see what happens, but first try to guess!
-        strlen(DEFAULT_FILE) + 1
-    );
+  // Skip over the space
+  start++;
 
-    return start;
+  for (end = start; end[0] != ' '; end++) {
+    if (!end[0] || end + deflen > req + reqlen) { return NULL; };
+  }
+
+  if (end[-1] == '/') {
+    end--;
+  } else {
+    end[0] = '/';
+  }
+
+
+  memcpy(end + 1, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
+
+  return start;
 }
 
 int main() {
