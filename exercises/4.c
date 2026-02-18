@@ -58,6 +58,7 @@ void print_file(const char *path) {
     if (fd == -1) {
       // eg Open error: No such file or directory
       perror("Open error");
+      close(fd);
       return;
     }
 
@@ -66,6 +67,7 @@ void print_file(const char *path) {
     if (fstat(fd, &metadata) == -1) {
       // eg Stat error: Bad file descriptor
       perror("Stat error");
+      close(fd);
       return;
     }
 
@@ -82,6 +84,7 @@ void print_file(const char *path) {
       // Equivalent to
       printf("Malloc error: %s\n", strerror(errno));
 
+      close(fd);
       return;
     };
 
@@ -90,6 +93,8 @@ void print_file(const char *path) {
     if (bytes_read == -1) {
       // eg Read error: Bad file descriptor
       perror("Read error");
+      free(buf);
+      close(fd);
       return;
     }
 
