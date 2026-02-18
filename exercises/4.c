@@ -58,6 +58,7 @@ void print_file(const char *path) {
     if (fd == -1) {
       // eg Open error: No such file or directory
       perror("Open error");
+      return;
     }
 
     struct stat metadata;
@@ -65,11 +66,14 @@ void print_file(const char *path) {
     if (fstat(fd, &metadata) == -1) {
       // eg Stat error: Bad file descriptor
       perror("Stat error");
+      return;
     }
 
     // 👉 Change this to `char *` and malloc(). (malloc comes from <stdlib.h>)
     //    Hint 1: Don't forget to handle the case where malloc returns NULL!
     //    Hint 2: Don't forget to `free(buf)` later, to prevent memory leaks.
+
+    // char buf[metadata.st_size + 1];
     char *buf = malloc(metadata.st_size + 1);
 
     if (!buf) {
@@ -86,6 +90,7 @@ void print_file(const char *path) {
     if (bytes_read == -1) {
       // eg Read error: Bad file descriptor
       perror("Read error");
+      return;
     }
 
     buf[bytes_read] = '\0';
