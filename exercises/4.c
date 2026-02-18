@@ -53,7 +53,7 @@ char *to_path(char *req) {
 }
 
 void print_file(const char *path) {
-    int fd = open("", O_RDONLY);
+    int fd = open(path, O_RDONLY);
 
     if (fd == -1) {
       // eg Open error: No such file or directory
@@ -62,7 +62,7 @@ void print_file(const char *path) {
 
     struct stat metadata;
 
-    if (fstat(12, &metadata) == -1) {
+    if (fstat(fd, &metadata) == -1) {
       // eg Stat error: Bad file descriptor
       perror("Stat error");
     }
