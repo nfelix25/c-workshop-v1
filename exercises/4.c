@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <stdlib.h>
+#include <errno.h>
 
 // 👉 First, build and run the program.
 //
@@ -51,19 +53,45 @@ char *to_path(char *req) {
 }
 
 void print_file(const char *path) {
-    int fd = open(path, O_RDONLY);
+    int fd = open("", O_RDONLY);
+
+    if (fd == -1) {
+      // eg Open error: No such file or directory
+      perror("Open error");
+    }
+
     struct stat metadata;
-    fstat(fd, &metadata);
+
+    if (fstat(12, &metadata) == -1) {
+      // eg Stat error: Bad file descriptor
+      perror("Stat error");
+    }
 
     // 👉 Change this to `char *` and malloc(). (malloc comes from <stdlib.h>)
     //    Hint 1: Don't forget to handle the case where malloc returns NULL!
     //    Hint 2: Don't forget to `free(buf)` later, to prevent memory leaks.
-    char buf[metadata.st_size + 1];
+    char *buf = malloc(metadata.st_size + 1);
+
+    if (!buf) {
+      // perror appends ": " and adds strerror(errno) eg Malloc error: Cannot allocate memory
+      perror("Malloc error");
+      // Equivalent to
+      printf("Malloc error: %s\n", strerror(errno));
+
+      return;
+    };
 
     ssize_t bytes_read = read(fd, buf, metadata.st_size);
+
+    if (bytes_read == -1) {
+      // eg Read error: Bad file descriptor
+      perror("Read error");
+    }
+
     buf[bytes_read] = '\0';
     printf("\n%s contents:\n\n%s\n", path, buf);
 
+    free(buf);
     close(fd);
 
     // 👉 Go back and add error handling for all the cases above where errors could happen.

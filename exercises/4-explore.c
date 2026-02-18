@@ -85,9 +85,10 @@ int main() {
 
   struct stat *ref = &metadata;
 
-  (*ref).st_blocks = 0;
+  // ref->st_blocks equivalent to (*ref).st_blocks
+  ref->st_blocks = 0;
 
-  printf("Original: %lld\nRef: %lld\n\n", metadata.st_blocks, (*ref).st_blocks);
+  printf("Original: %lld\nRef: %lld\n\n", metadata.st_blocks, ref->st_blocks);
 
   char sized_buffer[metadata.st_size + 1];
 
@@ -97,6 +98,8 @@ int main() {
 
   // File descriptor position must be reset
   lseek(fd, 0, SEEK_SET);
+  // lseek using CUR whence/starting point
+  // lseek(fd, metadata.st_size * -1, SEEK_CUR);
 
   ssize_t sized_bytes_read = read(fd, sized_buffer, metadata.st_size);
   sized_buffer[metadata.st_size] = '\0';
