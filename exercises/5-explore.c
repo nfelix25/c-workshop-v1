@@ -9,43 +9,50 @@
 
 #define PORT 8080
 #define MAX_CONNECTIONS 1
-#define MAX_REQUEST_BYTES 1024
-const char *DEFAULT_FILE = "index.html";
+#define MAX_REQUEST_BYTES 32768
+
+const char* DEFAULT_FILE = "index.html";
 
 char *to_path(char *req) {
-  char *start, *end;
+    char *start, *end;
 
-  size_t reqlen, deflen;
-  reqlen = strlen(req);
-  deflen = strlen(DEFAULT_FILE);
+    // Advance `start` to the first space
+    for (start = req; start[0] != ' '; start++) {
+        if (!start[0]) {
+            return NULL;
+        }
+    }
 
-  // while (start[0] != ' ') {
-  //   // '\0' == 0 == FALSE
-  //   if (!start[0]) return NULL;
+    start++; // Skip over the space
 
-  //   start++;
-  // }
+    // Advance `end` to the second space
+    for (end = start; end[0] != ' '; end++) {
+        if (!end[0]) {
+            return NULL;
+        }
+    }
 
-  for (start = req; start[0] != ' '; start++) {
-    if (!start[0]) { return NULL; };
-  }
+    // Ensure there's a '/' right before where we're about to copy in "index.html"
+    if (end[-1] != '/') {
+        end[0] = '/';
+        end++;
+    }
 
-  int amount_to_skip = start[1] == '/' ? 2 : 1;
-  start += amount_to_skip;
+    // If there isn't enough room to copy in "index.html" then return NULL.
+    // (This only happens if the request has no headers, which should only
+    // come up in practice if the request is malformed or something.)
+    if (end + strlen(DEFAULT_FILE) > req + strlen(req)) {
+        return NULL;
+    }
 
-  for (end = start; end[0] != ' '; end++) {
-    return NULL;
-  }
+    // Copy in "index.html", overwriting whatever was there in the request string.
+    memcpy(end, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
 
-  if (end[-1] != '/') {
-    end[0] = '/';
-    end++;
-  }
+    return start + 1; // Skip the leading '/' (e.g. in "/blog/index.html")
+}
 
+int handle_req(char *request, int socket_fd) {
 
-  memcpy(end, DEFAULT_FILE, strlen(DEFAULT_FILE) + 1);
-
-  return start;
 }
 
 int main() {
