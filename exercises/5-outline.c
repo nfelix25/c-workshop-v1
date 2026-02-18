@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdio.h>
 #include <sys/fcntl.h>
 #include <sys/types.h>
@@ -81,23 +82,58 @@ int handle_req(char *request, int socket_fd) {
   if (!path) {
     write(socket_fd, RESPONSE_400, RESPONSE_400_LEN);
     return -1;
-  
+  }
 
   // Open the file at `path` in read-only mode with open()
+  int fd = open(path, O_RDONLY);
 
   // If open() failed (fd == -1):
   //   - if errno == ENOENT, send "HTTP/1.1 404 Not Found\n\n" to socket_fd
   //   - otherwise send "HTTP/1.1 500 Internal Server Error\n\n" to socket_fd
   //   - return -1 in either case
+  if (fd == -1) {
+    if (errno == ENOENT) {
+      write(socket_fd, RESPONSE_404, RESPONSE_404_LEN);
+    } else {
+      write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+    }
+
+    return -1;
+  }
+
+  struct stat stats;
 
   // Use fstat() to get file metadata (we need the file size)
   // If fstat() fails, send "HTTP/1.1 500 Internal Server Error\n\n" to socket_fd
+  if (fstat(fd, &stats) == -1) {
+    write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+    return -1;
+  }
 
   // Send the success header to the socket: "HTTP/1.1 200 OK\n\n"
+  // write(socket_fd, RESPONSE_200, RESPONSE_200_LEN);
   // Use a write loop to ensure ALL bytes are written (write() can write fewer than requested):
   //   - track bytes_written and bytes_to_write
   //   - loop while bytes_to_write > 0, advancing the pointer on each iteration
   //   - if write() returns -1, send a 500 error and return -1
+
+  // Use a block for scoping vars like bytes_written
+  {
+    const char* OK = RESPONSE_200;
+    size_t bytes_written = 0;
+    size_t bytes_to_write = RESPONSE_200_LEN;
+
+    while (bytes_to_write) {
+      bytes_written = write(socket_fd, OK + bytes_written, bytes_to_write);
+
+      if (bytes_written == -1) {
+        write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+        return -1;
+      }
+
+      bytes_to_write -= bytes_written;
+    }
+  }
 
   // Send the file contents to the socket using a read→write loop:
   //   - declare a buffer (e.g. char buffer[4096])
@@ -107,8 +143,35 @@ int handle_req(char *request, int socket_fd) {
   //     - advance buffer pointer each iteration
   //     - if write() returns -1, send a 500 error and return -1
   //   - after the outer loop, if read() returned -1, send a 500 error and return -1
+  {
+    char buffer[4096];
+    ssize_t bytes_read;
+
+    while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0) {
+      ssize_t bytes_written = 0;
+      ssize_t bytes_remaining = bytes_read;
+
+      while (bytes_remaining > 0) {
+        ssize_t result = write(socket_fd, buffer + bytes_written, bytes_remaining);
+
+        if (result == -1) {
+          write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+          return -1;
+        }
+
+        bytes_written += result;
+        bytes_remaining -= result;
+      }
+    }
+
+    if (bytes_read == -1) {
+      write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+      return -1;
+    }
+  }
 
   // close() the file descriptor
+  close(fd);
 
   return 0;
 }
