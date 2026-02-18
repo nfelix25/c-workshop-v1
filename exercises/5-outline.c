@@ -30,6 +30,36 @@ const char* DEFAULT_FILE = "index.html";
 #define RESPONSE_500_LEN strlen(RESPONSE_500)
 #define RESPONSE_200_LEN strlen(RESPONSE_200)
 
+enum error_code {
+    ERR_400 = 400,
+    ERR_404 = 404,
+    ERR_413 = 413,
+    ERR_500 = 500
+};
+
+void handle_error (int socket_fd, enum error_code err_code) {
+  switch (err_code) {
+    case ERR_400: {
+      write(socket_fd, RESPONSE_400, RESPONSE_400_LEN);
+      break;
+    }
+    case ERR_404: {
+      write(socket_fd, RESPONSE_404, RESPONSE_404_LEN);
+      break;
+    }
+    case ERR_413: {
+      write(socket_fd, RESPONSE_413, RESPONSE_413_LEN);
+      break;
+    }
+    case ERR_500: {
+      write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+      break;
+    }
+    default:
+      return;
+  }
+}
+
 char *to_path(char *req) {
   char *start, *end;
 
@@ -93,9 +123,9 @@ int handle_req(char *request, int socket_fd) {
   //   - return -1 in either case
   if (fd == -1) {
     if (errno == ENOENT) {
-      write(socket_fd, RESPONSE_404, RESPONSE_404_LEN);
+      handle_error(socket_fd, ERR_404);
     } else {
-      write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+      handle_error(socket_fd, ERR_500);
     }
 
     return -1;
@@ -106,7 +136,7 @@ int handle_req(char *request, int socket_fd) {
   // Use fstat() to get file metadata (we need the file size)
   // If fstat() fails, send "HTTP/1.1 500 Internal Server Error\n\n" to socket_fd
   if (fstat(fd, &stats) == -1) {
-    write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+    handle_error(socket_fd, ERR_500);
     return -1;
   }
 
@@ -127,7 +157,7 @@ int handle_req(char *request, int socket_fd) {
       bytes_written = write(socket_fd, OK + bytes_written, bytes_to_write);
 
       if (bytes_written == -1) {
-        write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+        handle_error(socket_fd, ERR_500);
         return -1;
       }
 
@@ -155,7 +185,7 @@ int handle_req(char *request, int socket_fd) {
         ssize_t result = write(socket_fd, buffer + bytes_written, bytes_remaining);
 
         if (result == -1) {
-          write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+          handle_error(socket_fd, ERR_500);
           return -1;
         }
 
@@ -165,7 +195,7 @@ int handle_req(char *request, int socket_fd) {
     }
 
     if (bytes_read == -1) {
-      write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
+      handle_error(socket_fd, ERR_500);
       return -1;
     }
   }
@@ -241,7 +271,7 @@ int main() {
   //     - else (request too large):
       } else {
   //       - send "HTTP/1.1 413 Content Too Large\n\n" to req_socket_fd
-        write(req_socket_fd, RESPONSE_413, RESPONSE_413_LEN);
+        handle_error(socket_fd, ERR_413);
       }
   //     - close(req_socket_fd)
       close(req_socket_fd);
