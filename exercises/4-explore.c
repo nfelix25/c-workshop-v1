@@ -59,6 +59,7 @@ int main() {
   // struct my_stat my_metadata;
 
   // fstat mutates metadata directly, return only used for error handling
+  // Does not return address becuase memory from func calls is freed
   if (fstat(fd, &metadata) == -1) {
     // Error
     printf("Error: %d\nCause: %s\n\n", errno, strerror(errno));
@@ -87,6 +88,20 @@ int main() {
   (*ref).st_blocks = 0;
 
   printf("Original: %lld\nRef: %lld\n\n", metadata.st_blocks, (*ref).st_blocks);
+
+  char sized_buffer[metadata.st_size + 1];
+
+  ssize_t sized_bytes_read_before_lseek = read(fd, sized_buffer, metadata.st_size);
+
+  printf("Size: %lld\nBytes read without lseek: %zd\n\n", metadata.st_size, sized_bytes_read_before_lseek);
+
+  // File descriptor position must be reset
+  lseek(fd, 0, SEEK_SET);
+
+  ssize_t sized_bytes_read = read(fd, sized_buffer, metadata.st_size);
+  sized_buffer[metadata.st_size] = '\0';
+
+  printf("Size: %lld\nBytes read after lseek: %zd\nBuffer contents: %s\n\n", metadata.st_size, sized_bytes_read, sized_buffer);
 
   close(fd);
 
