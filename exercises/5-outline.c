@@ -13,52 +13,12 @@
 #include <stdbool.h>
 #include <errno.h>
 
+#include "errors.h"
+
 const int PORT = 8080;
 const int MAX_REQUEST_BYTES = 32768;
 const int MAX_CONNECTIONS = 2;
 const char* DEFAULT_FILE = "index.html";
-
-#define RESPONSE_400 "HTTP/1.1 400 Bad Request\n\n"
-#define RESPONSE_404 "HTTP/1.1 404 Not Found\n\n"
-#define RESPONSE_413 "HTTP/1.1 413 Content Too Large\n\n"
-#define RESPONSE_500 "HTTP/1.1 500 Internal Server Error\n\n"
-#define RESPONSE_200 "HTTP/1.1 200 OK\n\n"
-
-#define RESPONSE_400_LEN strlen(RESPONSE_400)
-#define RESPONSE_404_LEN strlen(RESPONSE_404)
-#define RESPONSE_413_LEN strlen(RESPONSE_413)
-#define RESPONSE_500_LEN strlen(RESPONSE_500)
-#define RESPONSE_200_LEN strlen(RESPONSE_200)
-
-enum error_code {
-    ERR_400 = 400,
-    ERR_404 = 404,
-    ERR_413 = 413,
-    ERR_500 = 500
-};
-
-void handle_error (int socket_fd, enum error_code err_code) {
-  switch (err_code) {
-    case ERR_400: {
-      write(socket_fd, RESPONSE_400, RESPONSE_400_LEN);
-      break;
-    }
-    case ERR_404: {
-      write(socket_fd, RESPONSE_404, RESPONSE_404_LEN);
-      break;
-    }
-    case ERR_413: {
-      write(socket_fd, RESPONSE_413, RESPONSE_413_LEN);
-      break;
-    }
-    case ERR_500: {
-      write(socket_fd, RESPONSE_500, RESPONSE_500_LEN);
-      break;
-    }
-    default:
-      return;
-  }
-}
 
 char *to_path(char *req) {
   char *start, *end;
@@ -110,7 +70,7 @@ int handle_req(char *request, int socket_fd) {
   // Hint: use write(socket_fd, ...) — not printf
 
   if (!path) {
-    write(socket_fd, RESPONSE_400, RESPONSE_400_LEN);
+    handle_400(socket_fd);
     return -1;
   }
 
@@ -123,9 +83,9 @@ int handle_req(char *request, int socket_fd) {
   //   - return -1 in either case
   if (fd == -1) {
     if (errno == ENOENT) {
-      handle_error(socket_fd, ERR_404);
+      handle_400(socket_fd);
     } else {
-      handle_error(socket_fd, ERR_500);
+      handle_500(socket_fd);
     }
 
     return -1;
@@ -136,7 +96,7 @@ int handle_req(char *request, int socket_fd) {
   // Use fstat() to get file metadata (we need the file size)
   // If fstat() fails, send "HTTP/1.1 500 Internal Server Error\n\n" to socket_fd
   if (fstat(fd, &stats) == -1) {
-    handle_error(socket_fd, ERR_500);
+    handle_500(socket_fd);
     return -1;
   }
 
@@ -157,7 +117,7 @@ int handle_req(char *request, int socket_fd) {
       bytes_written = write(socket_fd, OK + bytes_written, bytes_to_write);
 
       if (bytes_written == -1) {
-        handle_error(socket_fd, ERR_500);
+        handle_500(socket_fd);
         return -1;
       }
 
@@ -185,7 +145,7 @@ int handle_req(char *request, int socket_fd) {
         ssize_t result = write(socket_fd, buffer + bytes_written, bytes_remaining);
 
         if (result == -1) {
-          handle_error(socket_fd, ERR_500);
+          handle_500(socket_fd);
           return -1;
         }
 
@@ -195,7 +155,7 @@ int handle_req(char *request, int socket_fd) {
     }
 
     if (bytes_read == -1) {
-      handle_error(socket_fd, ERR_500);
+      handle_500(socket_fd);
       return -1;
     }
   }
@@ -271,7 +231,7 @@ int main() {
   //     - else (request too large):
       } else {
   //       - send "HTTP/1.1 413 Content Too Large\n\n" to req_socket_fd
-        handle_error(socket_fd, ERR_413);
+        handle_413(socket_fd);
       }
   //     - close(req_socket_fd)
       close(req_socket_fd);
