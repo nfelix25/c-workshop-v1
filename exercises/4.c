@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stdarg.h>
 
 // 👉 First, build and run the program.
 //
@@ -52,13 +53,33 @@ char *to_path(char *req) {
     return start + 1; // Skip the leading '/' (e.g. in "/blog/index.html")
 }
 
+void handle_error(char err_type[], int fd, void *mem) {
+  char err_sfx[] = " error";
+  ssize_t length = strlen(err_type) + strlen(err_sfx) + 1;
+  char buf[length];
+
+  memcpy(buf, err_type, strlen(err_type));
+  memcpy(buf + strlen(err_type), err_sfx, strlen(err_sfx) + 1);
+
+  perror(buf);
+
+  if (fd != -1) {
+    close(fd);
+  }
+
+  if (mem != NULL) {
+    free(mem);
+  }
+}
+
 void print_file(const char *path) {
     int fd = open(path, O_RDONLY);
 
     if (fd == -1) {
       // eg Open error: No such file or directory
-      perror("Open error");
-      close(fd);
+      // perror("Open error");
+      // close(fd);
+      handle_error("Open", fd, NULL);
       return;
     }
 
@@ -66,8 +87,9 @@ void print_file(const char *path) {
 
     if (fstat(fd, &metadata) == -1) {
       // eg Stat error: Bad file descriptor
-      perror("Stat error");
-      close(fd);
+      // perror("Stat error");
+      // close(fd);
+      handle_error("Stat", fd, NULL);
       return;
     }
 
@@ -80,11 +102,13 @@ void print_file(const char *path) {
 
     if (!buf) {
       // perror appends ": " and adds strerror(errno) eg Malloc error: Cannot allocate memory
-      perror("Malloc error");
+      // perror("Malloc error");
       // Equivalent to
-      printf("Malloc error: %s\n", strerror(errno));
+      // printf("Malloc error: %s\n", strerror(errno));
 
-      close(fd);
+      // close(fd);
+
+      handle_error("Malloc", fd, NULL);
       return;
     };
 
@@ -92,9 +116,11 @@ void print_file(const char *path) {
 
     if (bytes_read == -1) {
       // eg Read error: Bad file descriptor
-      perror("Read error");
-      free(buf);
-      close(fd);
+      // perror("Read error");
+      // free(buf);
+      // close(fd);
+
+      handle_error("Read", fd, buf);
       return;
     }
 
