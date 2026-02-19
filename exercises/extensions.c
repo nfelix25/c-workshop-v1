@@ -8,6 +8,10 @@ char* extension_to_content_type (const char* ext) {
       return "text/css";
     case JS:
       return "application/javascript";
+    case WASM:
+      return "application/wasm";
+    case WEBP:
+      return "image/webp";
     case PNG:
       return "image/png";
     case JPG:

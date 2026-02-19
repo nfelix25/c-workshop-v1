@@ -13,6 +13,9 @@
 #include <stdbool.h>
 #include <errno.h>
 
+#include "extensions.h"
+#include "errors.h"
+
 #ifdef __linux__
 #include <sys/sendfile.h>
 #endif
@@ -26,22 +29,6 @@
 #define PORT 8080
 #define MAX_REQUEST_BYTES 32768
 
-int respond_error(int socket_fd, int fd, const char *message) {
-    if (fd != -1) {
-        close(fd);
-    }
-
-    char response[256]; // These error responses are small, e.g. "500 Internal Server Error"
-    snprintf(response, sizeof(response), "HTTP/1.1 %s\r\n\r\n", message);
-
-    write(socket_fd, response, strlen(response));
-
-    return -1;
-}
-
-int respond_500(int socket_fd, int fd) {
-    return respond_error(socket_fd, fd, "500 Internal Server Error");
-}
 
 const char* DEFAULT_FILE = "index.html";
 
@@ -107,55 +94,12 @@ char *to_path(char *req) {
     return start + 1;
 }
 
-// Macro to define a 4-char constant integer
-#define FOURCHAR(a, b, c, d) a | (b << 8) | (c << 16) | (d << 24)
-
-// Define constants for HTML and JPEG tags
-#define HTML FOURCHAR('h', 't', 'm', 'l')
-#define WASM FOURCHAR('w', 'a', 's', 'm')
-#define WEBP FOURCHAR('w', 'e', 'b', 'p')
-#define JPEG FOURCHAR('j', 'p', 'e', 'g')
-#define JPG FOURCHAR('j', 'p', 'g', 0)
-#define CSS FOURCHAR('c', 's', 's', 0)
-#define PNG FOURCHAR('p', 'n', 'g', 0)
-#define GIF FOURCHAR('g', 'i', 'f', 0)
-#define JS FOURCHAR('j', 's', 0, 0)
-
 size_t write_response_header(char ext[4], char *resp_str) {
     char *content_type;
 
-    switch (*(int *)ext) {
-        case HTML:
-            content_type = "text/html";
-            break;
-        case WASM:
-            content_type = "application/wasm";
-            break;
-        case CSS:
-            content_type = "text/css";
-            break;
-        case JS:
-            content_type = "application/javascript";
-            break;
-        case PNG:
-            content_type = "image/png";
-            break;
-        case JPG:
-            content_type = "image/jpeg";
-            break;
-        case JPEG:
-            content_type = "image/jpeg";
-            break;
-        case WEBP:
-            content_type = "image/webp";
-            break;
-        case GIF:
-            content_type = "image/gif";
-            break;
-        default:
-            content_type = "application/octet-stream";
-            break;
-    }
+    content_type = extension_to_content_type(ext);
+
+    printf("Content-Type: %s\n", content_type);
 
     return sprintf(resp_str, "HTTP/1.1 200 OK\r\nContent-Type: %s\r\n\r\n", content_type);
 }
@@ -163,8 +107,8 @@ size_t write_response_header(char ext[4], char *resp_str) {
 int handle_req(char *request, int socket_fd) {
     char *path = to_path(request);
 
-    if (path == NULL) {
-        return respond_error(socket_fd, -1, "400 Bad Request");
+    if (path != NULL) {
+        return handle_404(socket_fd);
     }
 
     int fd = open(path, O_RDONLY);

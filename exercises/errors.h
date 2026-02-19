@@ -23,9 +23,9 @@ enum error_code {
     ERR_500 = 500
 };
 
-void handle_400(int socket_fd);
-void handle_404(int socket_fd);
-void handle_413(int socket_fd);
-void handle_500(int socket_fd);
+int handle_400(int socket_fd);
+int handle_404(int socket_fd);
+int handle_413(int socket_fd);
+int handle_500(int socket_fd);
 
 #endif
