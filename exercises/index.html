@@ -1,10 +1,679 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Hello, World!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImagiNation Network v1.0 — Summer Map</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sky-top: #5ba3e8;
+      --sky-bot: #a8d4f5;
+      --grass:   #6abf45;
+      --dirt:    #c8a46e;
+      --shadow:  rgba(0,0,0,0.18);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--sky-top);
+    }
+
+    /* ── Title bar ── */
+    .titlebar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 28px;
+      background: #000080;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+      border-bottom: 2px solid #0000aa;
+    }
+    .titlebar-left, .titlebar-right {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+    .titlebar-center {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: #ffff55;
+      letter-spacing: 2px;
+    }
+
+    /* ── World canvas ── */
+    .world {
+      position: fixed;
+      inset: 28px 0 0 0;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 45%, var(--grass) 45%);
+      overflow: hidden;
+    }
+
+    /* ── Clouds ── */
+    .cloud {
+      position: absolute;
+      background: #fff;
+      border-radius: 50px;
+      opacity: 0.85;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+    }
+    .cloud-1 { width: 80px; height: 28px; top: 28px; left: -100px; animation: drift 28s linear infinite; }
+    .cloud-1::before { width: 44px; height: 40px; top: -18px; left: 10px; }
+    .cloud-1::after  { width: 30px; height: 30px; top: -12px; left: 36px; }
+
+    .cloud-2 { width: 120px; height: 36px; top: 60px; left: -150px; animation: drift 38s linear infinite 6s; }
+    .cloud-2::before { width: 60px; height: 55px; top: -26px; left: 18px; }
+    .cloud-2::after  { width: 44px; height: 40px; top: -18px; left: 60px; }
+
+    .cloud-3 { width: 64px; height: 22px; top: 15px; left: -90px; animation: drift 22s linear infinite 14s; }
+    .cloud-3::before { width: 36px; height: 32px; top: -14px; left: 8px; }
+    .cloud-3::after  { width: 24px; height: 22px; top: -10px; left: 30px; }
+
+    @keyframes drift {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(100vw + 200px)); }
+    }
+
+    /* ── Isometric ground plane ── */
+    .ground {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 58%;
+    }
+
+    /* Path (dirt road) SVG background */
+    .paths {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Buildings ── */
+    .building {
+      position: absolute;
+      cursor: pointer;
+      transition: transform 0.12s;
+      transform-origin: bottom center;
+      text-decoration: none;
+    }
+    .building:hover { transform: scale(1.06); }
+    .building:hover .building-label { opacity: 1; transform: translateY(-4px); }
+    .building:active { transform: scale(0.97); }
+
+    .building-label {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: #fff;
+      background: #000080;
+      border: 2px solid #ffff55;
+      padding: 4px 8px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.15s, transform 0.15s;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .building-label::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #ffff55;
+    }
+
+    /* ── SVG building sprites ── */
+    svg { display: block; }
+
+    /* Trees */
+    .tree {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* ── Cursor (pixelated hand) ── */
+    body { cursor: default; }
+    .building { cursor: pointer; }
+
+    /* ── Boot screen overlay ── */
+    .boot {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      animation: boot-fade 0.6s ease 2.4s forwards;
+    }
+    @keyframes boot-fade {
+      to { opacity: 0; pointer-events: none; }
+    }
+    .boot-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(10px, 2vw, 18px);
+      color: #00ff00;
+      text-align: center;
+      line-height: 2;
+    }
+    .boot-bar-wrap {
+      width: 240px;
+      height: 16px;
+      border: 2px solid #00ff00;
+      padding: 2px;
+    }
+    .boot-bar {
+      height: 100%;
+      background: #00ff00;
+      animation: load 2s linear forwards;
+    }
+    @keyframes load { from { width: 0; } to { width: 100%; } }
+    .boot-sub {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: #888;
+      letter-spacing: 1px;
+      animation: blink-sub 0.8s step-end infinite;
+    }
+    @keyframes blink-sub { 50% { opacity: 0; } }
+
+    /* ── Tooltip (bottom bar) ── */
+    .statusbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 22px;
+      background: #000080;
+      border-top: 2px solid #0000aa;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      z-index: 100;
+    }
+    .statusbar-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+    .statusbar-text span { color: #ffff55; }
+
+    /* ── Volcano smoke ── */
+    .smoke-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(140,140,140,0.6);
+      animation: smoke-rise 3s ease-out infinite;
+    }
+    @keyframes smoke-rise {
+      0%   { transform: translate(0, 0) scale(0.5); opacity: 0.7; }
+      100% { transform: translate(-20px, -60px) scale(2); opacity: 0; }
+    }
+
+    /* Exit sign pulse */
+    .exit-sign {
+      animation: exit-pulse 2s ease-in-out infinite;
+    }
+    @keyframes exit-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* Water shimmer */
+    .water-shimmer {
+      animation: shimmer 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes shimmer {
+      from { opacity: 0.7; }
+      to   { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-    <h1>This is the root / page</h1>
-    <p>There's nothing here except a <a href="/blog">blog</a>.</p>
+
+<!-- Boot screen -->
+<div class="boot">
+  <div class="boot-logo">
+    ImagiNation Network<br>
+    <span style="color:#ffff55">v1.0</span>
+  </div>
+  <div class="boot-bar-wrap">
+    <div class="boot-bar"></div>
+  </div>
+  <div class="boot-sub">CONNECTING TO SERVER...</div>
+</div>
+
+<!-- Title bar -->
+<div class="titlebar">
+  <div class="titlebar-left">ImagiNation v1.0</div>
+  <div class="titlebar-center">★ SUMMER MAP ★</div>
+  <div class="titlebar-right" id="clock">00:00:00</div>
+</div>
+
+<!-- Status bar -->
+<div class="statusbar">
+  <div class="statusbar-text" id="status-text">Welcome! Click a building to visit. &nbsp;|&nbsp; <span>3 destinations available</span></div>
+</div>
+
+<!-- World -->
+<div class="world">
+  <!-- Clouds -->
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <div class="ground">
+    <!-- SVG world: paths, water, terrain -->
+    <svg class="paths" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Ground base -->
+      <rect width="1000" height="560" fill="#6abf45"/>
+
+      <!-- Dirt paths -->
+      <!-- Main horizontal road -->
+      <path d="M 60 420 Q 200 400 400 390 Q 600 380 800 390 Q 900 395 960 410"
+            stroke="#c8a46e" stroke-width="28" fill="none" stroke-linecap="round"/>
+      <!-- Vertical spur to top (blog/castle) -->
+      <path d="M 400 390 Q 390 320 340 230 Q 330 200 310 170"
+            stroke="#c8a46e" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <!-- Spur to right (sierra land) -->
+      <path d="M 750 385 Q 810 340 850 290"
+            stroke="#c8a46e" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <!-- Spur to townhall (center) -->
+      <path d="M 490 388 Q 490 340 490 290"
+            stroke="#c8a46e" stroke-width="18" fill="none" stroke-linecap="round"/>
+      <!-- Left spur to shop -->
+      <path d="M 200 400 Q 170 380 130 370 Q 100 365 80 360"
+            stroke="#c8a46e" stroke-width="18" fill="none" stroke-linecap="round"/>
+
+      <!-- Road edges (gravel) -->
+      <path d="M 60 420 Q 200 400 400 390 Q 600 380 800 390 Q 900 395 960 410"
+            stroke="#b89460" stroke-width="30" fill="none" stroke-linecap="round" opacity="0.3"/>
+
+      <!-- Pond / water feature -->
+      <ellipse cx="490" cy="340" rx="55" ry="30" fill="#4ab0e0" opacity="0.85" class="water-shimmer"/>
+      <ellipse cx="490" cy="340" rx="48" ry="24" fill="#62c0ee" opacity="0.5" class="water-shimmer"/>
+      <!-- Pond ripples -->
+      <ellipse cx="480" cy="335" rx="18" ry="8" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
+      <ellipse cx="500" cy="348" rx="12" ry="5" fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+
+      <!-- Fountain base -->
+      <ellipse cx="490" cy="345" rx="22" ry="10" fill="#2980b9" opacity="0.5"/>
+      <rect x="486" y="310" width="8" height="35" fill="#aaa" rx="2"/>
+      <ellipse cx="490" cy="310" rx="12" ry="5" fill="#62c0ee" opacity="0.7"/>
+
+      <!-- Mountains / volcano (top right) -->
+      <polygon points="870,40 820,160 920,160" fill="#7a6a5a"/>
+      <polygon points="870,40 855,90 885,90" fill="#fff" opacity="0.85"/>
+      <!-- Volcano crater -->
+      <ellipse cx="870" cy="45" rx="18" ry="8" fill="#cc3300"/>
+      <ellipse cx="870" cy="45" rx="12" ry="5" fill="#ff5500"/>
+
+      <!-- Left orange autumn hill -->
+      <ellipse cx="60" cy="220" rx="110" ry="90" fill="#d4793a" opacity="0.9"/>
+      <ellipse cx="60" cy="220" rx="80" ry="65" fill="#e8894a" opacity="0.7"/>
+      <!-- Autumn trees on hill -->
+      <circle cx="20" cy="170" r="20" fill="#cc6622"/>
+      <rect x="17" y="178" width="6" height="18" fill="#7a4a20"/>
+      <circle cx="65" cy="155" r="24" fill="#dd7733"/>
+      <rect x="62" y="162" width="6" height="20" fill="#7a4a20"/>
+      <circle cx="110" cy="180" r="18" fill="#cc5511"/>
+      <rect x="107" y="188" width="6" height="16" fill="#7a4a20"/>
+
+      <!-- Far left castle / blog hill -->
+      <ellipse cx="300" cy="135" rx="70" ry="50" fill="#5a9a35" opacity="0.8"/>
+
+      <!-- Right green hills -->
+      <ellipse cx="970" cy="280" rx="90" ry="60" fill="#5aaa35" opacity="0.7"/>
+
+      <!-- Center-left water tower platform -->
+      <rect x="395" y="385" width="10" height="40" fill="#8B7355"/>
+      <rect x="375" y="385" width="50" height="8" fill="#6B5335" rx="2"/>
+      <!-- Cross beams -->
+      <line x1="395" y1="410" x2="415" y2="430" stroke="#6B5335" stroke-width="3"/>
+      <line x1="415" y1="410" x2="395" y2="430" stroke="#6B5335" stroke-width="3"/>
+
+    </svg>
+
+    <!-- ══ BLOG building — Castle on the hill (top-left) ══ -->
+    <a href="/blog" class="building" style="left: 23%; top: 4%;"
+       onmouseenter="setStatus('📖 BLOG CASTLE — Chronicles &amp; Writings')"
+       onmouseleave="clearStatus()">
+      <div class="building-label">BLOG CASTLE</div>
+      <svg width="130" height="140" viewBox="0 0 130 140" xmlns="http://www.w3.org/2000/svg">
+        <!-- Castle shadow -->
+        <ellipse cx="65" cy="138" rx="52" ry="8" fill="var(--shadow)"/>
+        <!-- Main tower -->
+        <rect x="30" y="50" width="70" height="80" fill="#b0a090" rx="2"/>
+        <rect x="30" y="50" width="70" height="80" fill="url(#castle-shade)" rx="2"/>
+        <!-- Battlements -->
+        <rect x="28" y="36" width="16" height="20" fill="#c0b0a0" rx="1"/>
+        <rect x="50" y="36" width="16" height="20" fill="#c0b0a0" rx="1"/>
+        <rect x="72" y="36" width="16" height="20" fill="#c0b0a0" rx="1"/>
+        <rect x="94" y="36" width="16" height="20" fill="#c0b0a0" rx="1"/>
+        <!-- Roof band -->
+        <rect x="28" y="52" width="74" height="6" fill="#9a8878"/>
+        <!-- Left turret -->
+        <rect x="8" y="62" width="28" height="60" fill="#a89888" rx="2"/>
+        <rect x="6" y="50" width="11" height="18" fill="#b8a898" rx="1"/>
+        <rect x="19" y="50" width="11" height="18" fill="#b8a898" rx="1"/>
+        <rect x="6" y="64" width="32" height="5" fill="#9a8878"/>
+        <!-- Right turret -->
+        <rect x="94" y="62" width="28" height="60" fill="#a89888" rx="2"/>
+        <rect x="93" y="50" width="11" height="18" fill="#b8a898" rx="1"/>
+        <rect x="108" y="50" width="11" height="18" fill="#b8a898" rx="1"/>
+        <rect x="92" y="64" width="32" height="5" fill="#9a8878"/>
+        <!-- Flag -->
+        <line x1="65" y1="10" x2="65" y2="40" stroke="#888" stroke-width="2"/>
+        <polygon points="65,10 90,22 65,32" fill="#cc3333"/>
+        <!-- Windows -->
+        <rect x="56" y="68" width="18" height="24" fill="#224488" rx="2"/>
+        <line x1="65" y1="68" x2="65" y2="92" stroke="#1a3366" stroke-width="1"/>
+        <line x1="56" y1="80" x2="74" y2="80" stroke="#1a3366" stroke-width="1"/>
+        <!-- Side windows -->
+        <rect x="14" y="76" width="14" height="18" fill="#224488" rx="2"/>
+        <rect x="102" y="76" width="14" height="18" fill="#224488" rx="2"/>
+        <!-- Door -->
+        <rect x="55" y="100" width="20" height="30" fill="#3d2800" rx="8 8 0 0"/>
+        <circle cx="72" cy="115" r="2" fill="#c0a020"/>
+        <!-- Arch detail -->
+        <path d="M 55 108 Q 65 98 75 108" fill="none" stroke="#5a3800" stroke-width="1.5"/>
+        <!-- Stone texture -->
+        <rect x="30" y="60" width="70" height="3" fill="#9a8878" opacity="0.4"/>
+        <rect x="30" y="72" width="70" height="3" fill="#9a8878" opacity="0.4"/>
+        <rect x="30" y="84" width="70" height="3" fill="#9a8878" opacity="0.4"/>
+        <rect x="30" y="96" width="70" height="3" fill="#9a8878" opacity="0.4"/>
+        <defs>
+          <linearGradient id="castle-shade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#000" stop-opacity="0.08"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0.22"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </a>
+
+    <!-- ══ NEWS building — Town Hall (center) ══ -->
+    <a href="/news" class="building" style="left: 43%; top: 22%;"
+       onmouseenter="setStatus('📰 TOWN HALL — Latest News &amp; Headlines')"
+       onmouseleave="clearStatus()">
+      <div class="building-label">TOWN HALL</div>
+      <svg width="150" height="160" viewBox="0 0 150 160" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow -->
+        <ellipse cx="75" cy="158" rx="60" ry="9" fill="var(--shadow)"/>
+        <!-- Main building body -->
+        <rect x="20" y="60" width="110" height="92" fill="#e8dcc8" rx="3"/>
+        <!-- Shading -->
+        <rect x="110" y="60" width="20" height="92" fill="#000" opacity="0.08" rx="0 3 3 0"/>
+        <!-- Columns -->
+        <rect x="28" y="64" width="10" height="84" fill="#d4c8b4" rx="2"/>
+        <rect x="48" y="64" width="10" height="84" fill="#d4c8b4" rx="2"/>
+        <rect x="92" y="64" width="10" height="84" fill="#d4c8b4" rx="2"/>
+        <rect x="112" y="64" width="10" height="84" fill="#d4c8b4" rx="2"/>
+        <!-- Entablature -->
+        <rect x="18" y="56" width="114" height="10" fill="#c8bcaa" rx="2"/>
+        <!-- Pediment / triangle roof -->
+        <polygon points="10,58 75,14 140,58" fill="#d8ccba"/>
+        <polygon points="10,58 75,14 140,58" fill="none" stroke="#c0b4a2" stroke-width="2"/>
+        <!-- Pediment detail -->
+        <polygon points="30,50 75,20 120,50" fill="#e0d4c0"/>
+        <!-- Dome / cupola -->
+        <ellipse cx="75" cy="12" rx="18" ry="10" fill="#aaa"/>
+        <ellipse cx="75" cy="8"  rx="10" ry="6"  fill="#c8c8c8"/>
+        <rect x="72" y="0" width="6" height="12" fill="#999"/>
+        <circle cx="75" cy="0" r="4" fill="#ffcc00"/>
+        <!-- Clock face -->
+        <circle cx="75" cy="34" r="12" fill="#fffff0" stroke="#9a8878" stroke-width="2"/>
+        <line x1="75" y1="34" x2="75" y2="25" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+        <line x1="75" y1="34" x2="82" y2="38" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Windows -->
+        <rect x="30" y="72" width="20" height="26" fill="#7ab0d8" rx="2"/>
+        <rect x="65" y="72" width="20" height="26" fill="#7ab0d8" rx="2"/>
+        <rect x="100" y="72" width="20" height="26" fill="#7ab0d8" rx="2"/>
+        <!-- Window panes -->
+        <line x1="40" y1="72" x2="40" y2="98" stroke="#5a90b8" stroke-width="1"/>
+        <line x1="30" y1="85" x2="50" y2="85" stroke="#5a90b8" stroke-width="1"/>
+        <line x1="75" y1="72" x2="75" y2="98" stroke="#5a90b8" stroke-width="1"/>
+        <line x1="65" y1="85" x2="85" y2="85" stroke="#5a90b8" stroke-width="1"/>
+        <line x1="110" y1="72" x2="110" y2="98" stroke="#5a90b8" stroke-width="1"/>
+        <line x1="100" y1="85" x2="120" y2="85" stroke="#5a90b8" stroke-width="1"/>
+        <!-- Sign -->
+        <rect x="30" y="104" width="90" height="14" fill="#8B4513" rx="2"/>
+        <text x="75" y="115" font-family="serif" font-size="8" fill="#ffdd88" text-anchor="middle" font-weight="bold">TOWN HALL</text>
+        <!-- Door -->
+        <rect x="60" y="118" width="30" height="34" fill="#5a3800" rx="10 10 0 0"/>
+        <rect x="62" y="120" width="12" height="20" fill="#7a5820" rx="3"/>
+        <rect x="76" y="120" width="12" height="20" fill="#7a5820" rx="3"/>
+        <circle cx="73" cy="133" r="2" fill="#c0a020"/>
+        <circle cx="77" cy="133" r="2" fill="#c0a020"/>
+        <!-- Steps -->
+        <rect x="50" y="150" width="50" height="5" fill="#c8bcaa" rx="1"/>
+        <rect x="55" y="146" width="40" height="5" fill="#d0c4b0" rx="1"/>
+      </svg>
+    </a>
+
+    <!-- ══ TWITTER building — Sierra Land (right) ══ -->
+    <a href="/twitter" class="building" style="left: 72%; top: 12%;"
+       onmouseenter="setStatus('🐦 SIERRA LAND — Social &amp; Chatter')"
+       onmouseleave="clearStatus()">
+      <div class="building-label">SIERRA LAND</div>
+      <svg width="160" height="170" viewBox="0 0 160 170" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow -->
+        <ellipse cx="80" cy="168" rx="65" ry="9" fill="var(--shadow)"/>
+        <!-- Archway gate posts -->
+        <rect x="18" y="60" width="22" height="100" fill="#d44422" rx="3"/>
+        <rect x="120" y="60" width="22" height="100" fill="#d44422" rx="3"/>
+        <!-- Arch top -->
+        <path d="M 18 60 Q 80 10 142 60" fill="#cc3318" stroke="#aa2208" stroke-width="3"/>
+        <path d="M 28 65 Q 80 22 132 65" fill="none" stroke="#e05535" stroke-width="3"/>
+        <!-- Arch detail band -->
+        <path d="M 18 72 Q 80 25 142 72" fill="none" stroke="#b82200" stroke-width="5" opacity="0.5"/>
+        <!-- Gate sign board -->
+        <rect x="40" y="34" width="80" height="26" fill="#ffcc44" rx="4" stroke="#cc8800" stroke-width="2"/>
+        <text x="80" y="44" font-family="'Press Start 2P', monospace" font-size="6" fill="#cc4400" text-anchor="middle">SIERRA</text>
+        <text x="80" y="55" font-family="'Press Start 2P', monospace" font-size="6" fill="#cc4400" text-anchor="middle">LAND</text>
+        <!-- Stars on arch -->
+        <text x="34" y="58" font-size="12" fill="#ffee55">★</text>
+        <text x="110" y="58" font-size="12" fill="#ffee55">★</text>
+        <text x="72" y="22" font-size="14" fill="#ffee55">★</text>
+        <!-- Gate bars -->
+        <rect x="52" y="100" width="6" height="58" fill="#aa8800" rx="2"/>
+        <rect x="64" y="100" width="6" height="58" fill="#aa8800" rx="2"/>
+        <rect x="76" y="100" width="6" height="58" fill="#aa8800" rx="2"/>
+        <rect x="88" y="100" width="6" height="58" fill="#aa8800" rx="2"/>
+        <rect x="100" y="100" width="6" height="58" fill="#aa8800" rx="2"/>
+        <!-- Horizontal bars -->
+        <rect x="50" y="112" width="62" height="5" fill="#ccaa00" rx="2"/>
+        <rect x="50" y="130" width="62" height="5" fill="#ccaa00" rx="2"/>
+        <rect x="50" y="148" width="62" height="5" fill="#ccaa00" rx="2"/>
+        <!-- Column bricks -->
+        <rect x="20" y="64" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="20" y="76" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="20" y="88" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="20" y="100" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="122" y="64" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="122" y="76" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="122" y="88" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <rect x="122" y="100" width="18" height="6" fill="#cc2200" opacity="0.4"/>
+        <!-- Bird/twitter icon on top -->
+        <text x="67" y="18" font-size="18" fill="#1d9bf0">🐦</text>
+      </svg>
+    </a>
+
+    <!-- ══ Decorative: Shop (left, non-link) ══ -->
+    <div class="building" style="left: 4%; top: 42%; cursor: default; pointer-events: none;">
+      <svg width="110" height="120" viewBox="0 0 110 120" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="55" cy="118" rx="44" ry="7" fill="var(--shadow)"/>
+        <!-- Building -->
+        <rect x="8" y="44" width="94" height="70" fill="#8fa8c8" rx="2"/>
+        <rect x="88" y="44" width="14" height="70" fill="#000" opacity="0.1"/>
+        <!-- Awning -->
+        <rect x="2" y="40" width="106" height="12" fill="#d44" rx="2"/>
+        <path d="M2 52 L 16 44 L 30 52 L 44 44 L 58 52 L 72 44 L 86 52 L 100 44 L 108 52" fill="none" stroke="#bb3333" stroke-width="2"/>
+        <!-- Sign -->
+        <rect x="15" y="22" width="80" height="20" fill="#c8a020" rx="3" stroke="#a08010" stroke-width="2"/>
+        <text x="55" y="35" font-family="serif" font-size="11" fill="#4a1a00" text-anchor="middle" font-weight="bold">SHOP</text>
+        <!-- Windows -->
+        <rect x="14" y="56" width="28" height="26" fill="#ffeebb" rx="2"/>
+        <rect x="68" y="56" width="28" height="26" fill="#ffeebb" rx="2"/>
+        <!-- Window cross -->
+        <line x1="28" y1="56" x2="28" y2="82" stroke="#dcc" stroke-width="1"/>
+        <line x1="14" y1="69" x2="42" y2="69" stroke="#dcc" stroke-width="1"/>
+        <line x1="82" y1="56" x2="82" y2="82" stroke="#dcc" stroke-width="1"/>
+        <line x1="68" y1="69" x2="96" y2="69" stroke="#dcc" stroke-width="1"/>
+        <!-- Door -->
+        <rect x="40" y="84" width="30" height="30" fill="#4a2800" rx="4 4 0 0"/>
+        <circle cx="67" cy="99" r="2" fill="#c0a020"/>
+      </svg>
+    </div>
+
+    <!-- ══ Decorative: Water tower (center-left) ══ -->
+    <div style="position:absolute; left: 35%; top: 50%; pointer-events: none;">
+      <svg width="60" height="90" viewBox="0 0 60 90" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="30" cy="88" rx="24" ry="5" fill="var(--shadow)"/>
+        <!-- Legs -->
+        <line x1="15" y1="88" x2="22" y2="50" stroke="#7a5a30" stroke-width="4"/>
+        <line x1="45" y1="88" x2="38" y2="50" stroke="#7a5a30" stroke-width="4"/>
+        <line x1="30" y1="88" x2="30" y2="50" stroke="#7a5a30" stroke-width="3"/>
+        <line x1="15" y1="72" x2="45" y2="72" stroke="#7a5a30" stroke-width="2"/>
+        <line x1="15" y1="60" x2="45" y2="60" stroke="#7a5a30" stroke-width="2"/>
+        <!-- Tank -->
+        <ellipse cx="30" cy="50" rx="22" ry="8" fill="#5a3a18"/>
+        <rect x="8" y="28" width="44" height="24" fill="#6a4a28" rx="3"/>
+        <ellipse cx="30" cy="28" rx="22" ry="8" fill="#7a5a38"/>
+        <!-- Roof -->
+        <polygon points="30,14 8,28 52,28" fill="#5a3a18"/>
+        <ellipse cx="30" cy="14" rx="12" ry="5" fill="#6a4a28"/>
+      </svg>
+    </div>
+
+    <!-- Volcano smoke particles -->
+    <div style="position:absolute; left: 87.5%; top: 5%; pointer-events: none;">
+      <div class="smoke-particle" style="width:12px;height:12px; left:0; top:0; animation-delay:0s;"></div>
+      <div class="smoke-particle" style="width:8px;height:8px; left:6px; top:4px; animation-delay:1s;"></div>
+      <div class="smoke-particle" style="width:10px;height:10px; left:-5px; top:2px; animation-delay:2s;"></div>
+    </div>
+
+    <!-- Trees scattered around -->
+    <!-- Right side trees -->
+    <div class="tree" style="left:60%; top:55%;">
+      <svg width="36" height="48" viewBox="0 0 36 48"><ellipse cx="18" cy="47" rx="14" ry="4" fill="var(--shadow)"/><polygon points="18,2 2,30 34,30" fill="#3a8a22"/><polygon points="18,10 4,36 32,36" fill="#4aaa2a"/><rect x="15" y="34" width="6" height="14" fill="#6B4226"/></svg>
+    </div>
+    <div class="tree" style="left:62%; top:50%;">
+      <svg width="30" height="40" viewBox="0 0 30 40"><polygon points="15,2 1,26 29,26" fill="#2a7a18"/><polygon points="15,8 3,30 27,30" fill="#3a9a22"/><rect x="12" y="28" width="6" height="12" fill="#6B4226"/></svg>
+    </div>
+    <div class="tree" style="left:58%; top:52%;">
+      <svg width="28" height="38" viewBox="0 0 28 38"><polygon points="14,2 1,24 27,24" fill="#4aaa2a"/><polygon points="14,8 2,28 26,28" fill="#3a8a20"/><rect x="11" y="26" width="6" height="12" fill="#6B4226"/></svg>
+    </div>
+    <!-- Top center trees -->
+    <div class="tree" style="left:30%; top:38%;">
+      <svg width="32" height="44" viewBox="0 0 32 44"><polygon points="16,2 1,28 31,28" fill="#3a8a22"/><polygon points="16,10 2,34 30,34" fill="#4aaa2a"/><rect x="13" y="32" width="6" height="12" fill="#6B4226"/></svg>
+    </div>
+    <div class="tree" style="left:32%; top:35%;">
+      <svg width="26" height="36" viewBox="0 0 26 36"><polygon points="13,2 1,22 25,22" fill="#2a7a18"/><polygon points="13,7 2,26 24,26" fill="#38981f"/><rect x="10" y="24" width="6" height="12" fill="#6B4226"/></svg>
+    </div>
+
+    <!-- Exit sign (bottom left) -->
+    <div class="building" style="left: 2%; top: 74%; cursor: default; pointer-events: none;">
+      <svg width="70" height="50" viewBox="0 0 70 50" class="exit-sign">
+        <rect x="2" y="2" width="66" height="36" fill="#cc0000" rx="4" stroke="#880000" stroke-width="2"/>
+        <text x="35" y="24" font-family="'Press Start 2P', monospace" font-size="12" fill="#fff" text-anchor="middle" font-weight="bold">EXIT</text>
+        <rect x="20" y="38" width="8" height="10" fill="#666"/>
+        <rect x="42" y="38" width="8" height="10" fill="#666"/>
+        <rect x="10" y="46" width="50" height="4" fill="#555" rx="1"/>
+      </svg>
+    </div>
+
+    <!-- Fence sections -->
+    <div style="position:absolute; left:15%; top:76%; pointer-events:none;">
+      <svg width="200" height="30" viewBox="0 0 200 30">
+        <rect x="0" y="8" width="200" height="6" fill="#c8a87a" rx="2"/>
+        <rect x="0" y="18" width="200" height="6" fill="#c8a87a" rx="2"/>
+        <rect x="4" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="24" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="44" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="64" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="84" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="104" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="124" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="144" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="164" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+        <rect x="184" y="2" width="8" height="26" fill="#b89060" rx="1"/>
+      </svg>
+    </div>
+
+    <!-- Help sign (near center) -->
+    <div style="position:absolute; left:44%; top:68%; pointer-events:none;">
+      <svg width="50" height="50" viewBox="0 0 50 50">
+        <rect x="2" y="2" width="46" height="34" fill="#44aa44" rx="4" stroke="#226622" stroke-width="2"/>
+        <text x="25" y="23" font-family="'Press Start 2P', monospace" font-size="10" fill="#fff" text-anchor="middle">HELP</text>
+        <rect x="20" y="36" width="6" height="12" fill="#666"/>
+        <rect x="24" y="36" width="6" height="12" fill="#666"/>
+        <rect x="10" y="46" width="30" height="4" fill="#555" rx="1"/>
+      </svg>
+    </div>
+
+  </div><!-- /ground -->
+</div><!-- /world -->
+
+<script>
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m + ':' + s;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Status bar
+  const defaultStatus = 'Welcome! Click a building to visit. &nbsp;|&nbsp; <span>3 destinations available</span>';
+  function setStatus(msg) {
+    document.getElementById('status-text').innerHTML = msg;
+  }
+  function clearStatus() {
+    document.getElementById('status-text').innerHTML = defaultStatus;
+  }
+
+  // Keyboard navigation
+  const buildings = [
+    { key: 'b', href: '/blog',    label: 'Blog Castle' },
+    { key: 'n', href: '/news',    label: 'Town Hall (News)' },
+    { key: 't', href: '/twitter', label: 'Sierra Land (Twitter)' },
+  ];
+  document.addEventListener('keydown', (e) => {
+    const b = buildings.find(b => b.key === e.key.toLowerCase());
+    if (b) window.location.href = b.href;
+  });
+
+  // Hint after a few seconds
+  setTimeout(() => {
+    if (document.getElementById('status-text').innerHTML === defaultStatus) {
+      setStatus('TIP: Press <span>B</span> for Blog · <span>N</span> for News · <span>T</span> for Twitter');
+      setTimeout(clearStatus, 4000);
+    }
+  }, 5000);
+</script>
 </body>
 </html>
