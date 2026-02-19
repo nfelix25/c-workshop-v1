@@ -107,7 +107,7 @@ size_t write_response_header(char ext[4], char *resp_str) {
 int handle_req(char *request, int socket_fd) {
     char *path = to_path(request);
 
-    if (path != NULL) {
+    if (path == NULL) {
         return handle_404(socket_fd);
     }
 
@@ -115,9 +115,9 @@ int handle_req(char *request, int socket_fd) {
 
     if (fd == -1) {
         if (errno == ENOENT) {
-            return respond_error(socket_fd, fd, "404 Not Found");
+            return handle_404(socket_fd);
         } else {
-            return respond_500(socket_fd, fd);
+            return handle_500(socket_fd);
         }
     }
 
@@ -126,7 +126,7 @@ int handle_req(char *request, int socket_fd) {
     // Populate the `stats` struct with the file's metadata
     // If it fails (even though the file was open), respond with a 500 error.
     if (fstat(fd, &stats) == -1) {
-        return respond_500(socket_fd, fd);
+        return handle_500(socket_fd);
     }
 
     // Write the header to the socket ("HTTP/1.1 200 OK" followed by a Content-Type header)
@@ -153,7 +153,7 @@ int handle_req(char *request, int socket_fd) {
 
             if (bytes_written == -1) {
                 // If sending the 200 didn't succeed, the odds of 500 succeeding aren't great!
-                return respond_500(socket_fd, fd);
+                return handle_500(socket_fd);
             }
 
             bytes_to_write -= bytes_written;
@@ -173,14 +173,14 @@ int handle_req(char *request, int socket_fd) {
                 // 👉 Replace these hardcoded integers by calling the Linux sendfile().
                 //    Its docs are here:
                 //    https://www.man7.org/linux/man-pages/man2/sendfile.2.html#RETURN_VALUE
-                ssize_t bytes_sent = 0;
-                bool send_failed = 1;
+                ssize_t bytes_sent = sendfile(socket_fd, fd, NULL, bytes_to_send);
+                bool send_failed = bytes_sent == -1;
             #elif defined(__APPLE__)
                 // 👉 Replace these hardcoded integers by calling the macOS sendfile().
                 //    Its docs are here:
                 //    https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sendfile.2.html
-                off_t bytes_sent = 0;
-                bool send_failed = 1;
+                off_t bytes_sent = bytes_to_send;
+                bool send_failed = sendfile(fd, socket_fd, 0, &bytes_sent, NULL, 0) == -1;
             #else
                 #error "Unsupported operating system"
             #endif
@@ -251,7 +251,7 @@ int main() {
                 handle_req(req, req_socket_fd);
             } else {
                 // The request was larger than the maximum size we support!
-                respond_error(socket_fd, -1, "413 Content Too Large");
+                handle_413(socket_fd);
             }
 
             close(req_socket_fd);

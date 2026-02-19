@@ -1,0 +1,1707 @@
+<!doctype html>
+<!-- saved from url=(0038)https://this-is-the-news.noelfelix.cv/ -->
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <title>~*~HACKER NEWS~*~ ULTIMATE HOMEPAGE!!!</title>
+    <link rel="icon" href="https://this-is-the-news.noelfelix.cv/favicon.ico" />
+    <style>
+      body {
+        background: #000080;
+        background-image:
+          repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 0, 0.1) 10px,
+            rgba(255, 255, 0, 0.1) 20px
+          ),
+          repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 10px,
+            rgba(0, 255, 255, 0.1) 10px,
+            rgba(0, 255, 255, 0.1) 20px
+          );
+        color: #00ff00;
+        font-family: "Comic Sans MS", cursive;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: black;
+        border: 5px ridge #ffd700;
+        padding: 20px;
+        box-shadow: 0 0 20px #ff00ff;
+      }
+
+      h1 {
+        text-align: center;
+        color: #ff00ff;
+        text-shadow:
+          2px 2px #00ffff,
+          4px 4px #ffff00;
+        font-size: 36px;
+        animation: rainbow 3s infinite;
+      }
+
+      @keyframes rainbow {
+        0% {
+          color: #ff0000;
+        }
+        16% {
+          color: #ff7f00;
+        }
+        33% {
+          color: #ffff00;
+        }
+        50% {
+          color: #00ff00;
+        }
+        66% {
+          color: #0000ff;
+        }
+        83% {
+          color: #8b00ff;
+        }
+        100% {
+          color: #ff0000;
+        }
+      }
+
+      .marquee {
+        background: #ff0000;
+        color: #ffff00;
+        padding: 10px;
+        margin: 10px 0;
+        border: 3px dashed #00ff00;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .construction {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .construction img {
+        width: 100px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .counter {
+        text-align: center;
+        background: #000;
+        border: 3px solid #00ff00;
+        padding: 10px;
+        margin: 15px 0;
+        color: #00ffff;
+      }
+
+      .story {
+        background: linear-gradient(45deg, #330033 0%, #003333 100%);
+        border: 3px solid #00ffff;
+        margin: 15px 0;
+        padding: 15px;
+        box-shadow: 5px 5px #ff00ff;
+      }
+
+      .story:hover {
+        background: linear-gradient(45deg, #440044 0%, #004444 100%);
+        transform: scale(1.02);
+      }
+
+      .story-title {
+        color: #ffff00;
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        text-shadow: 1px 1px #ff00ff;
+      }
+
+      .story-title:hover {
+        color: #ff00ff;
+        text-decoration: underline;
+      }
+
+      .story-title:visited {
+        color: #ff69b4;
+      }
+
+      .story-meta {
+        color: #00ff00;
+        font-size: 14px;
+        margin-top: 8px;
+      }
+
+      .story-meta a {
+        color: #00ffff;
+        text-decoration: none;
+      }
+
+      .story-meta a:hover {
+        text-decoration: underline;
+        color: #ffff00;
+      }
+
+      .loading {
+        text-align: center;
+        color: #ffff00;
+        font-size: 24px;
+        animation: blink 1s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        50%,
+        100% {
+          opacity: 1;
+        }
+        25%,
+        75% {
+          opacity: 0;
+        }
+      }
+
+      .webring {
+        text-align: center;
+        margin: 20px 0;
+        padding: 10px;
+        background: #ff00ff;
+        color: #ffff00;
+        border: 3px dotted #00ffff;
+      }
+
+      .buttons {
+        text-align: center;
+        margin: 15px 0;
+      }
+
+      .buttons img {
+        margin: 5px;
+      }
+
+      .fire {
+        display: inline-block;
+        color: #ff4500;
+        animation: fire 1s infinite;
+      }
+
+      @keyframes fire {
+        0%,
+        100% {
+          text-shadow: 0 0 5px #ff0000;
+        }
+        50% {
+          text-shadow: 0 0 20px #ff4500;
+        }
+      }
+
+      .sparkle {
+        animation: sparkle 1.5s infinite;
+      }
+
+      @keyframes sparkle {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.7;
+          transform: scale(1.2);
+        }
+      }
+
+      .tabs {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        gap: 10px;
+      }
+
+      .tab {
+        background: #330066;
+        color: #00ffff;
+        border: 3px solid #ff00ff;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 1px 1px #000;
+        transition: all 0.3s;
+      }
+
+      .tab:hover {
+        background: #660099;
+        transform: scale(1.05);
+      }
+
+      .tab.active {
+        background: #ff00ff;
+        color: #ffff00;
+        border-color: #00ffff;
+        box-shadow: 0 0 15px #ff00ff;
+      }
+
+      .bookmark-btn {
+        background: #ff00ff;
+        color: #ffff00;
+        border: 2px solid #00ffff;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: 10px;
+        font-family: "Comic Sans MS", cursive;
+        box-shadow: 2px 2px #000;
+      }
+
+      .bookmark-btn:hover {
+        background: #00ffff;
+        color: #ff00ff;
+        transform: scale(1.1);
+      }
+
+      .bookmark-btn.bookmarked {
+        background: #ffff00;
+        color: #ff00ff;
+        border-color: #ff00ff;
+      }
+
+      .story-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .story-header a {
+        flex: 1;
+      }
+
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        animation: fadeIn 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #000080;
+        border: 5px ridge #ffd700;
+        padding: 30px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow:
+          0 0 30px #ff00ff,
+          0 0 50px #00ffff;
+        animation: zoomIn 0.3s;
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+        to {
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      .modal-header {
+        color: #ff00ff;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        text-shadow:
+          2px 2px #00ffff,
+          4px 4px #ffff00;
+        margin-bottom: 20px;
+        animation: rainbow 3s infinite;
+      }
+
+      .modal-body {
+        color: #00ff00;
+        background: #000;
+        border: 3px solid #00ffff;
+        padding: 20px;
+        margin: 15px 0;
+        font-size: 16px;
+        line-height: 1.6;
+        box-shadow: inset 0 0 10px #ff00ff;
+      }
+
+      .modal-close {
+        background: #ff0000;
+        color: #ffff00;
+        border: 3px solid #00ff00;
+        padding: 10px 30px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto 0;
+        font-family: "Comic Sans MS", cursive;
+        box-shadow: 3px 3px #000;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow:
+            3px 3px #000,
+            0 0 10px #ff0000;
+        }
+        50% {
+          box-shadow:
+            3px 3px #000,
+            0 0 30px #ff0000;
+        }
+      }
+
+      .modal-close:hover {
+        background: #00ff00;
+        color: #ff00ff;
+        border-color: #ffff00;
+        transform: scale(1.1);
+      }
+
+      .modal-blink {
+        animation: blink 1s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="modal-overlay"
+      id="summaryModal"
+      onclick="closeSummaryModal(event)"
+    >
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">🌟✨ ULTRA MEGA SUMMARY ✨🌟</div>
+        <div class="modal-body" id="modalSummaryText"></div>
+        <button class="modal-close" onclick="closeSummaryModal()">
+          <span class="modal-blink">*** CLICK HERE TO CLOSE ***</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>✨🔥 WELCOME TO MY HACKER NEWS PAGE 🔥✨</h1>
+
+      <marquee class="marquee">
+        *** YOU ARE VISITOR #42069 *** BEST VIEWED IN NETSCAPE NAVIGATOR ***
+        SIGN MY GUESTBOOK ***
+      </marquee>
+
+      <div class="construction">
+        <p style="color: #ffff00; font-size: 24px; font-weight: bold">
+          🚧 <span class="sparkle">UNDER CONSTRUCTION</span> 🚧
+        </p>
+        <p style="color: #00ffff">
+          Last Updated: <span class="fire">RIGHT NOW!!!</span>
+        </p>
+      </div>
+
+      <div class="counter">
+        <p style="font-size: 20px; margin: 0">
+          <span class="fire">🔥</span> HOT OFF THE PRESS TECH NEWS
+          <span class="fire">🔥</span>
+        </p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(&#39;all&#39;)">
+          🌐 ALL STORIES
+        </div>
+        <div class="tab" onclick="switchTab(&#39;bookmarks&#39;)">
+          ⭐ BOOKMARKED
+        </div>
+      </div>
+
+      <div id="stories">
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://pudding.cool/2026/02/womens-sizing/"
+              target="_blank"
+              class="story-title"
+              >1. Sizing chaos</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by zdw | ⭐ 284 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47066552"
+              target="_blank"
+            >
+              160 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://github.com/LadybirdBrowser/ladybird/issues/933"
+              target="_blank"
+              class="story-title"
+              >2. Ladybird: Closing this as we are no longer pursuing Swift
+              adoption</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by thewavelength | ⭐ 189 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47067678"
+              target="_blank"
+            >
+              140 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://old.reddit.com/r/MacOS/comments/1r8900z/macos_which_officially_supports_27_year_old/"
+              target="_blank"
+              class="story-title"
+              >3. 27-year-old Apple iBooks can connect to Wi-Fi and download
+              official updates</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by surprisetalk | ⭐ 144 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47066241"
+              target="_blank"
+            >
+              72 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://jasonfantl.com/posts/Universal-Unique-IDs/"
+              target="_blank"
+              class="story-title"
+              >4. Cosmologically Unique IDs</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by jfantl | ⭐ 281 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47064490"
+              target="_blank"
+            >
+              83 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://chromereleases.googleblog.com/2026/02/stable-channel-update-for-desktop_13.html"
+              target="_blank"
+              class="story-title"
+              >5. Zero-day CSS: CVE-2026-2441 exists in the wild</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by idoxer | ⭐ 255 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47062748"
+              target="_blank"
+            >
+              136 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://tailscale.com/blog/peer-relays-ga"
+              target="_blank"
+              class="story-title"
+              >6. Tailscale Peer Relays is now generally available</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by sz4kerto | ⭐ 325 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47063005"
+              target="_blank"
+            >
+              172 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://letsencrypt.org/2026/02/18/dns-persist-01.html"
+              target="_blank"
+              class="story-title"
+              >7. DNS-Persist-01: A New Model for DNS-Based Challenge
+              Validation</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by todsacerdoti | ⭐ 199 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47064047"
+              target="_blank"
+            >
+              95 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://github.com/phreda4/r3/blob/main/doc/r3forth_tutorial.md"
+              target="_blank"
+              class="story-title"
+              >8. R3forth: A concatenative language derived from ColorForth</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by tosh | ⭐ 57 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47065179"
+              target="_blank"
+            >
+              9 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://rygoldstein.com/posts/perils-of-isbn"
+              target="_blank"
+              class="story-title"
+              >9. The Perils of ISBN</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by evakhoury | ⭐ 72 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47063663"
+              target="_blank"
+            >
+              37 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://thunderseethe.dev/posts/how-to-choose-between-hm-and-bidir/"
+              target="_blank"
+              class="story-title"
+              >10. How to Choose Between Hindley-Milner and Bidirectional
+              Typing</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by thunderseethe | ⭐ 14 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47025885"
+              target="_blank"
+            >
+              0 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://digitalseams.com/blog/making-a-font-with-9999-ligatures-to-display-thirteenth-century-monk-numerals"
+              target="_blank"
+              class="story-title"
+              >11. Making a font with ligatures to display thirteenth-century
+              monk numerals</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by a7b3fa | ⭐ 41 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47024585"
+              target="_blank"
+            >
+              6 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.gamingonlinux.com/2026/02/minecraft-java-is-switching-from-opengl-to-vulkan-for-the-vibrant-visuals-update/"
+              target="_blank"
+              class="story-title"
+              >12. Minecraft Java is switching from OpenGL to Vulkan</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by tuananh | ⭐ 15 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47068948"
+              target="_blank"
+            >
+              0 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://alllooksame.com/"
+              target="_blank"
+              class="story-title"
+              >13. All Look Same?</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by mirawelner | ⭐ 34 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47067498"
+              target="_blank"
+            >
+              17 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://rkirov.github.io/posts/lean1/"
+              target="_blank"
+              class="story-title"
+              >14. Learning Lean: Part 1</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by vinhnx | ⭐ 84 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47022604"
+              target="_blank"
+            >
+              9 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://benedikt-gross.de/projects/roads-to-rome/"
+              target="_blank"
+              class="story-title"
+              >15. Roads to Rome (2015)</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by robin_reala | ⭐ 11 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47023240"
+              target="_blank"
+            >
+              0 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.ycombinator.com/companies/metriport/jobs/XC2AF8s-senior-security-engineer"
+              target="_blank"
+              class="story-title"
+              >16. Metriport (YC S22) is hiring a security engineer to harden
+              healthcare infra</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by dgoncharov | ⭐ 1 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47066310"
+              target="_blank"
+            >
+              0 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://spawn-queue.acm.org/doi/pdf/10.1145/3778029"
+              target="_blank"
+              class="story-title"
+              >17. What Every Experimenter Must Know About Randomization</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by underscoreF | ⭐ 47 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47064845"
+              target="_blank"
+            >
+              20 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://resobscura.substack.com/p/what-is-happening-to-writing"
+              target="_blank"
+              class="story-title"
+              >18. What is happening to writing? Cognitive debt, Claude Code,
+              the space around AI</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by benbreen | ⭐ 101 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47061642"
+              target="_blank"
+            >
+              74 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.historytoday.com/archive/first-global-empire"
+              target="_blank"
+              class="story-title"
+              >19. Portugal: The First Global Empire (2015)</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by Thevet | ⭐ 56 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47058368"
+              target="_blank"
+            >
+              49 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://news.ycombinator.com/item?id=47060220"
+              target="_blank"
+              class="story-title"
+              >20. Show HN: Rebrain.gg – Doom learn, don't doom scroll</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by FailMore | ⭐ 46 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47060220"
+              target="_blank"
+            >
+              23 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://ekrsulov.github.io/vectornest/"
+              target="_blank"
+              class="story-title"
+              >21. Show HN: VectorNest responsive web-based SVG editor</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by ekrsulov | ⭐ 69 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47062096"
+              target="_blank"
+            >
+              23 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://victoriaritvo.com/blog/semantle-solver/"
+              target="_blank"
+              class="story-title"
+              >22. A solver for Semantle</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by evakhoury | ⭐ 34 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47065146"
+              target="_blank"
+            >
+              5 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.omniglot.com/language/numbers/cistercian-numbers.htm"
+              target="_blank"
+              class="story-title"
+              >23. Cistercian Numbers</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by debo_ | ⭐ 67 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47062883"
+              target="_blank"
+            >
+              12 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://github.com/pocketbase/pocketbase/discussions/7287"
+              target="_blank"
+              class="story-title"
+              >24. Pocketbase lost its funding from FLOSS fund</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by Onavo | ⭐ 115 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47062561"
+              target="_blank"
+            >
+              82 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://kyleormsby.github.io/files/113spring26/113full_text.pdf"
+              target="_blank"
+              class="story-title"
+              >25. Discrete Structures [pdf]</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by mathgenius | ⭐ 47 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47065120"
+              target="_blank"
+            >
+              2 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://annas-archive.li/blog/llms-txt.html"
+              target="_blank"
+              class="story-title"
+              >26. If you’re an LLM, please read this</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by soheilpro | ⭐ 771 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47058219"
+              target="_blank"
+            >
+              359 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.nationalgeographic.fr/histoire/la-veritable-histoire-du-minotaure-ce-que-revele-archeologie-recherche-verification"
+              target="_blank"
+              class="story-title"
+              >27. The true history of the Minotaur: what archaeology reveals</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by joebig | ⭐ 35 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47026202"
+              target="_blank"
+            >
+              12 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://blog.computationalcomplexity.org/2026/02/assigning-open-problems-in-class.html"
+              target="_blank"
+              class="story-title"
+              >28. Assigning Open Problems in Class</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by baruchel | ⭐ 14 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47031656"
+              target="_blank"
+            >
+              5 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://devblogs.microsoft.com/azure-sql/langchain-with-sqlvectorstore-example/"
+              target="_blank"
+              class="story-title"
+              >29. Microsoft offers guide to pirating Harry Potter series for
+              LLM training</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by anonymous908213 | ⭐ 179 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47067759"
+              target="_blank"
+            >
+              104 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://celbyexample.com/"
+              target="_blank"
+              class="story-title"
+              >30. Show HN: CEL by Example</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by bufbuild | ⭐ 73 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47061029"
+              target="_blank"
+            >
+              37 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://vermaden.wordpress.com/2026/02/18/native-freebsd-kerberos-ldap-with-freeipa-idm/"
+              target="_blank"
+              class="story-title"
+              >31. Native FreeBSD Kerberos/LDAP with FreeIPA/IDM</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by vermaden | ⭐ 112 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47059520"
+              target="_blank"
+            >
+              54 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://gist.github.com/jake-stewart/0a8ea46159a7da2c808e5be2177e1783"
+              target="_blank"
+              class="story-title"
+              >32. Terminals should generate the 256-color palette</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by tosh | ⭐ 458 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47057824"
+              target="_blank"
+            >
+              181 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.anthropic.com/news/claude-sonnet-4-6"
+              target="_blank"
+              class="story-title"
+              >33. Claude Sonnet 4.6</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by adocomplete | ⭐ 1294 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47050488"
+              target="_blank"
+            >
+              1174 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://github.com/DatanoiseTV/tinyice"
+              target="_blank"
+              class="story-title"
+              >34. TinyIce: Single-binary Icecast2-compatible server
+              (auto-HTTPS, multi-tenant)</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by sylwester | ⭐ 113 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47057707"
+              target="_blank"
+            >
+              26 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://asahilinux.org/2026/02/progress-report-6-19/"
+              target="_blank"
+              class="story-title"
+              >35. Asahi Linux Progress Report: Linux 6.19</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by mkurz | ⭐ 402 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47059275"
+              target="_blank"
+            >
+              146 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a href="https://www.kpbj.fm/" target="_blank" class="story-title"
+              >36. Show HN: I'm launching a LPFM radio station</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by solomonb | ⭐ 89 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47052674"
+              target="_blank"
+            >
+              47 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://nvie.com/posts/15-years-later/"
+              target="_blank"
+              class="story-title"
+              >37. 15 years later, Microsoft morged my diagram</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by cheeaun | ⭐ 961 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47057829"
+              target="_blank"
+            >
+              364 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.sceneandheardnu.com/content/halt-and-catch-fire"
+              target="_blank"
+              class="story-title"
+              >38. Halt and Catch Fire: TV’s best drama you’ve probably never
+              heard of (2021)</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by walterbell | ⭐ 691 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47056314"
+              target="_blank"
+            >
+              364 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://elliotbonneville.com/the-only-moat-left-is-money/"
+              target="_blank"
+              class="story-title"
+              >39. The only moat left is money?</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by elliotbnvl | ⭐ 238 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47062521"
+              target="_blank"
+            >
+              337 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.bleepingcomputer.com/news/microsoft/microsoft-says-bug-causes-copilot-to-summarize-confidential-emails/"
+              target="_blank"
+              class="story-title"
+              >40. Microsoft says bug causes Copilot to summarize confidential
+              emails</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by tablets | ⭐ 239 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47060202"
+              target="_blank"
+            >
+              65 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://kiss-and-solid.com/blog/why-tdd-matters"
+              target="_blank"
+              class="story-title"
+              >41. The Big TDD Misunderstanding</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by WolfOliver | ⭐ 11 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47066347"
+              target="_blank"
+            >
+              2 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://github.com/taleshape-com/shaper"
+              target="_blank"
+              class="story-title"
+              >42. A DuckDB-based metabase alternative</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by wowi42 | ⭐ 163 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47057879"
+              target="_blank"
+            >
+              40 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://blogs.remobjects.com/2026/02/17/nerdsniped-windows-arm-emulation-performance/"
+              target="_blank"
+              class="story-title"
+              >43. AVX2 is slower than SSE2-4.x under Windows ARM emulation</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by vintagedave | ⭐ 105 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47061062"
+              target="_blank"
+            >
+              82 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.righto.com/2026/02/8087-instruction-decoding.html"
+              target="_blank"
+              class="story-title"
+              >44. Instruction decoding in the Intel 8087 floating-point chip</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by pwg | ⭐ 67 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47016658"
+              target="_blank"
+            >
+              16 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://fortune.com/2026/02/17/ai-productivity-paradox-ceo-study-robert-solow-information-technology-age/"
+              target="_blank"
+              class="story-title"
+              >45. AI adoption and Solow's productivity paradox</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by virgildotcodes | ⭐ 767 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47055979"
+              target="_blank"
+            >
+              706 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a href="https://www.mnemom.ai/" target="_blank" class="story-title"
+              >46. Show HN: Trust Protocols for Anthropic/OpenAI/Gemini</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by alexgarden | ⭐ 34 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47062824"
+              target="_blank"
+            >
+              23 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.tomshardware.com/pc-components/ssds/worlds-first-pcie-6-0-ssd-enters-mass-production-with-28gb-s-speeds-micron-9650-series-ssds-support-air-and-liquid-cooling"
+              target="_blank"
+              class="story-title"
+              >47. Micron's PCIe 6.0 SSD Hits Mass Production at 28 GB/S</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by m463 | ⭐ 12 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47067512"
+              target="_blank"
+            >
+              6 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://www.vogons.org/viewtopic.php?t=105451"
+              target="_blank"
+              class="story-title"
+              >48. Reverse Engineering Sid Meier's Railroad Tycoon for DOS from
+              1990</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by LowLevelMahn | ⭐ 152 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47015138"
+              target="_blank"
+            >
+              56 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://chrisloy.dev/post/2026/02/14/when-interfaces-become-disposable"
+              target="_blank"
+              class="story-title"
+              >49. When interfaces become disposable</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by chrisloy | ⭐ 20 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47023243"
+              target="_blank"
+            >
+              5 comments
+            </a>
+          </div>
+        </div>
+        <div class="story">
+          <div class="story-header">
+            <a
+              href="https://apnews.com/article/reeses-peanut-butter-cups-hershey-chocolate-1a66ec75247fd146888b7a747a740cd3"
+              target="_blank"
+              class="story-title"
+              >50. Grandson of Reese's Peanut Butter Cups inventor says Hershey
+              is cutting corners</a
+            ><button class="bookmark-btn">☆ SAVE</button>
+          </div>
+          <div class="story-meta">
+            👤 by petethomas | ⭐ 14 points | 💬
+            <a
+              href="https://news.ycombinator.com/item?id=47068200"
+              target="_blank"
+            >
+              3 comments
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="webring">
+        <p style="margin: 5px 0; font-size: 18px">
+          [ THIS SITE IS PART OF THE HACKER WEBRING ]
+        </p>
+        <p style="margin: 5px 0">
+          <a
+            href="https://this-is-the-news.noelfelix.cv/#"
+            style="color: #00ffff; font-weight: bold"
+            >← PREV</a
+          >
+          |
+          <a
+            href="https://this-is-the-news.noelfelix.cv/#"
+            style="color: #00ffff; font-weight: bold"
+            >RANDOM</a
+          >
+          |
+          <a
+            href="https://this-is-the-news.noelfelix.cv/#"
+            style="color: #00ffff; font-weight: bold"
+            >NEXT →</a
+          >
+        </p>
+      </div>
+
+      <div class="buttons">
+        <p style="color: #ffff00; font-size: 16px">*** COOL SITES ***</p>
+        <img
+          src="./news/netscape_now.gif"
+          alt="Netscape Now"
+          style="image-rendering: pixelated"
+        />
+        <img
+          src="./news/ie_logo.gif"
+          alt="IE"
+          style="image-rendering: pixelated"
+        />
+        <img
+          src="./news/html.gif"
+          alt="HTML"
+          style="image-rendering: pixelated"
+        />
+        <img
+          src="./news/geocities.gif"
+          alt="Geocities"
+          style="image-rendering: pixelated"
+        />
+      </div>
+
+      <marquee direction="right" style="color: #ff00ff; font-size: 14px">
+        Email me at: c00lh4x0r@geocities.com *** AOL/AIM: HackerDude13 *** ICQ:
+        1337420
+      </marquee>
+    </div>
+
+    <script>
+      async function fetchHackerNews() {
+        try {
+          // Fetch top stories
+          const response = await fetch(
+            "https://hacker-news.firebaseio.com/v0/topstories.json",
+          );
+          const storyIds = await response.json();
+
+          // Get first 20 stories
+          const topStories = storyIds.slice(0, 50);
+
+          // Fetch story details
+          const stories = await Promise.all(
+            topStories.map(async (id) => {
+              const storyResponse = await fetch(
+                `https://hacker-news.firebaseio.com/v0/item/${id}.json`,
+              );
+              return storyResponse.json();
+            }),
+          );
+
+          allStories = stories;
+          if (currentTab === "all") {
+            displayStories(stories);
+          }
+        } catch (error) {
+          document.getElementById("stories").innerHTML =
+            '<p style="color: #FF0000; text-align: center;">ERROR 404: THE INTERNET IS BROKEN!!! 💥</p>';
+        }
+      }
+
+      function displayStories(stories, showIndex = true) {
+        const storiesDiv = document.getElementById("stories");
+        storiesDiv.innerHTML = "";
+
+        if (stories.length === 0) {
+          storiesDiv.innerHTML =
+            '<p class="loading">📚 NO BOOKMARKS YET! CLICK THE ⭐ BUTTON TO SAVE STORIES! 📚</p>';
+          return;
+        }
+
+        stories.forEach((story, index) => {
+          if (!story) return;
+
+          const storyDiv = document.createElement("div");
+          storyDiv.className = "story";
+
+          const header = document.createElement("div");
+          header.className = "story-header";
+
+          const title = document.createElement("a");
+          title.href =
+            story.url || `https://news.ycombinator.com/item?id=${story.id}`;
+          title.target = "_blank";
+          title.className = "story-title";
+          title.textContent = showIndex
+            ? `${index + 1}. ${story.title}`
+            : story.title;
+
+          const bookmarkBtn = document.createElement("button");
+          bookmarkBtn.className = "bookmark-btn";
+          const isBookmarked = checkIfBookmarked(story.id);
+          const savedText =
+            currentTab === "bookmarks"
+              ? story.summary
+                ? "👓 SUMMARY"
+                : "✨ SUMMARIZE"
+              : "⭐ SAVED!";
+          bookmarkBtn.textContent = isBookmarked ? savedText : "☆ SAVE";
+          if (isBookmarked && currentTab !== "bookmarks")
+            bookmarkBtn.classList.add("bookmarked");
+          bookmarkBtn.onclick = (e) => {
+            e.preventDefault();
+            if (currentTab === "bookmarks" && isBookmarked) {
+              // Check if summary already exists
+              if (story.summary) {
+                showSummaryModal(story.summary);
+              } else {
+                const storyUrl =
+                  story.url ||
+                  `https://news.ycombinator.com/item?id=${story.id}`;
+
+                // Set loading state
+                const originalText = bookmarkBtn.textContent;
+                bookmarkBtn.textContent = "⏳ LOADING...";
+                bookmarkBtn.disabled = true;
+
+                // Call the summarize API
+                fetch("/api/summarize", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ url: storyUrl, title: story.title }),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log("Summary data received:", data);
+                    const result = data.summary;
+                    if (result) {
+                      // Store result in localStorage with existing bookmark
+                      let bookmarks = getBookmarks();
+                      const index = bookmarks.findIndex(
+                        (b) => b.id === story.id,
+                      );
+                      bookmarks[index].summary = result;
+                      saveBookmarks(bookmarks);
+                      // Show the summary
+                      showSummaryModal(result);
+                      // Update button text
+                      bookmarkBtn.textContent = "👓 SUMMARY";
+                    } else {
+                      bookmarkBtn.textContent = originalText;
+                    }
+                    bookmarkBtn.disabled = false;
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching summary:", error);
+                    bookmarkBtn.textContent = originalText;
+                    bookmarkBtn.disabled = false;
+                  });
+              }
+            } else {
+              toggleBookmark(story, bookmarkBtn);
+            }
+          };
+
+          header.appendChild(title);
+          header.appendChild(bookmarkBtn);
+
+          const meta = document.createElement("div");
+          meta.className = "story-meta";
+          meta.innerHTML = `
+                    👤 by ${story.by || "unknown"} |
+                    ⭐ ${story.score || 0} points |
+                    💬 <a href="https://news.ycombinator.com/item?id=${
+                      story.id
+                    }" target="_blank">
+                        ${story.descendants || 0} comments
+                    </a>
+                `;
+
+          storyDiv.appendChild(header);
+          storyDiv.appendChild(meta);
+          storiesDiv.appendChild(storyDiv);
+        });
+      }
+
+      let currentTab = "all";
+      let allStories = [];
+
+      function getBookmarks() {
+        const bookmarks = localStorage.getItem("hnBookmarks");
+        return bookmarks ? JSON.parse(bookmarks) : [];
+      }
+
+      function saveBookmarks(bookmarks) {
+        localStorage.setItem("hnBookmarks", JSON.stringify(bookmarks));
+      }
+
+      function checkIfBookmarked(storyId) {
+        const bookmarks = getBookmarks();
+        return bookmarks.some((b) => b.id === storyId);
+      }
+
+      function toggleBookmark(story, button) {
+        let bookmarks = getBookmarks();
+        const index = bookmarks.findIndex((b) => b.id === story.id);
+
+        if (index > -1) {
+          bookmarks.splice(index, 1);
+          button.textContent = "⭐ SAVE";
+          button.classList.remove("bookmarked");
+        } else {
+          bookmarks.push(story);
+          const savedText =
+            currentTab === "bookmarks" ? "👓 SUMMARY" : "⭐ SAVED!";
+          button.textContent = savedText;
+          if (currentTab !== "bookmarks") button.classList.add("bookmarked");
+        }
+
+        saveBookmarks(bookmarks);
+
+        // Refresh if viewing bookmarks
+        if (currentTab === "bookmarks") {
+          displayStories(getBookmarks(), false);
+        }
+      }
+
+      function switchTab(tab) {
+        currentTab = tab;
+        const tabs = document.querySelectorAll(".tab");
+        tabs.forEach((t) => t.classList.remove("active"));
+        event.target.classList.add("active");
+
+        if (tab === "all") {
+          displayStories(allStories);
+        } else {
+          displayStories(getBookmarks(), false);
+        }
+      }
+
+      function showSummaryModal(summary) {
+        const modal = document.getElementById("summaryModal");
+        const summaryText = document.getElementById("modalSummaryText");
+        const summaryHTML =
+          summary.indexOf("<div") > 0
+            ? summary.slice(summary.indexOf("<"), summary.lastIndexOf(">") + 1)
+            : summary;
+        summaryText.innerHTML = summaryHTML;
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSummaryModal(event) {
+        if (
+          !event ||
+          event.target.id === "summaryModal" ||
+          event.target.closest(".modal-close")
+        ) {
+          const modal = document.getElementById("summaryModal");
+          modal.style.display = "none";
+          document.body.style.overflow = "auto";
+        }
+      }
+
+      // Load stories when page loads
+      fetchHackerNews();
+
+      // Auto-refresh every 5 minutes (only if on all stories tab)
+      setInterval(
+        () => {
+          if (currentTab === "all") {
+            fetchHackerNews();
+          }
+        },
+        5 * 60 * 1000,
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Twitter Clone</title>
+  <link rel="stylesheet" href="/twitter/styles.css" />
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </div>
+      <ul class="nav-links">
+        <li class="nav-item active">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 1.696L.622 8.807l1.06 1.696L3 9.679V19.5C3 20.881 4.119 22 5.5 22h13c1.381 0 2.5-1.119 2.5-2.5V9.679l1.318.824 1.06-1.696L12 1.696zM12 16.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5z"/></svg>
+          <span>Home</span>
+        </li>
+        <li class="nav-item">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M21 7.086L12 2 3 7.086v9.828L12 22l9-5.086V7.086zm-9 3.914c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3zm0 2c2.21 0 4 1.79 4 4H8c0-2.21 1.79-4 4-4z"/></svg>
+          <span>Profile</span>
+        </li>
+        <li class="nav-item">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M10.54 1.75h2.92l1.57 2.36c.14.21.43.28.65.14L17.5 3l1.96 1.68-.17 2.79c-.02.25.18.47.43.47l2.81.06.45 2.88-2.24 1.61c-.2.15-.26.42-.14.64L21.83 14l-1.49 2.29-2.79-.03c-.26-.03-.48.19-.47.44l.03 2.81-2.86.51-1.64-2.22c-.15-.2-.43-.26-.64-.14L10 18.5l-2.29-1.49.03-2.79c.02-.26-.19-.48-.44-.47l-2.81.03L4 10.93l2.22-1.64c.2-.15.26-.43.14-.64L5.17 6.89 6.66 4.6l2.79.03c.26.02.48-.19.47-.44L9.89 1.4 10.54 1.75zm1.46 5.75c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+          <span>Settings</span>
+        </li>
+      </ul>
+      <button class="post-btn" id="open-compose">Post</button>
+    </nav>
+
+    <!-- Main feed -->
+    <main class="feed">
+      <header class="feed-header">
+        <h1>Home</h1>
+      </header>
+
+      <!-- Compose box -->
+      <div class="compose">
+        <div class="avatar compose-avatar">N</div>
+        <div class="compose-body">
+          <textarea id="tweet-input" placeholder="What is happening?!" maxlength="280"></textarea>
+          <div class="compose-footer">
+            <span class="char-count" id="char-count">280</span>
+            <button class="tweet-btn" id="tweet-btn">Post</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Tweets feed -->
+      <div id="feed"></div>
+    </main>
+
+    <!-- Right sidebar -->
+    <aside class="right-sidebar">
+      <div class="trends-box">
+        <h2>Trends for you</h2>
+        <div class="trend">
+          <span class="trend-category">Technology</span>
+          <span class="trend-name">#WebServers</span>
+          <span class="trend-count">4,821 posts</span>
+        </div>
+        <div class="trend">
+          <span class="trend-category">Programming</span>
+          <span class="trend-name">#CLang</span>
+          <span class="trend-count">12.1K posts</span>
+        </div>
+        <div class="trend">
+          <span class="trend-category">Trending</span>
+          <span class="trend-name">#Sockets</span>
+          <span class="trend-count">8,304 posts</span>
+        </div>
+        <div class="trend">
+          <span class="trend-category">Tech</span>
+          <span class="trend-name">#sendfile</span>
+          <span class="trend-count">1,099 posts</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Compose modal (mobile) -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <div class="compose">
+        <div class="avatar compose-avatar">N</div>
+        <div class="compose-body">
+          <textarea id="modal-tweet-input" placeholder="What is happening?!" maxlength="280"></textarea>
+          <div class="compose-footer">
+            <span class="char-count" id="modal-char-count">280</span>
+            <button class="tweet-btn" id="modal-tweet-btn">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/twitter/index.js"></script>
+</body>
+</html>
